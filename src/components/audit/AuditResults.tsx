@@ -27,39 +27,39 @@ const getScoreCategory = (score: number) => {
   return { level: "Needs Work", color: "text-red-600", bg: "bg-red-50" };
 };
 
-const getRecommendations = (score: number) => {
-  if (score >= 80) {
-    return [
-      "Continue monitoring and maintaining your strong brand foundation",
-      "Consider advanced brand strategy optimization",
-      "Focus on innovation and staying ahead of trends"
-    ];
-  }
-  if (score >= 60) {
-    return [
-      "Strengthen your brand guidelines and consistency",
-      "Develop clearer differentiation strategies", 
-      "Improve customer feedback systems"
-    ];
-  }
-  if (score >= 40) {
-    return [
-      "Define your core brand values and mission",
-      "Create comprehensive brand guidelines",
-      "Conduct thorough competitor analysis"
-    ];
-  }
-  return [
-    "Start with basic brand foundation work",
-    "Define your target audience clearly",
-    "Create a simple but consistent visual identity"
-  ];
+const getStrengthsAndWeaknesses = (answers: AuditAnswers) => {
+  const questionMap = {
+    mission: "Mission Statement",
+    target_audience: "Target Audience Knowledge",
+    brand_voice: "Brand Voice & Tone",
+    visual_identity: "Visual Brand Identity",
+    differentiation: "Competitive Differentiation",
+    consistency: "Brand Consistency",
+    values: "Brand Values",
+    customer_perception: "Customer Feedback",
+    brand_strategy: "Brand Strategy Documentation",
+    competitive_analysis: "Competitive Analysis"
+  };
+
+  const scores = Object.entries(answers).map(([key, value]) => ({
+    area: questionMap[key as keyof typeof questionMap],
+    score: parseInt(value)
+  }));
+
+  // Sort by score for strengths (highest) and weaknesses (lowest)
+  const sortedByStrength = [...scores].sort((a, b) => b.score - a.score);
+  const sortedByWeakness = [...scores].sort((a, b) => a.score - b.score);
+
+  const strengths = sortedByStrength.slice(0, 3).map(item => item.area);
+  const weaknesses = sortedByWeakness.slice(0, 3).map(item => item.area);
+
+  return { strengths, weaknesses };
 };
 
 const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) => {
   const score = calculateScore(answers);
   const scoreCategory = getScoreCategory(score);
-  const recommendations = getRecommendations(score);
+  const { strengths, weaknesses } = getStrengthsAndWeaknesses(answers);
 
   return (
     <div className="space-y-6">
@@ -103,28 +103,54 @@ const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) =
         </CardContent>
       </Card>
 
-      {/* Recommendations */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lightbulb className="h-5 w-5" />
-            Your Next Steps
-          </CardTitle>
-          <CardDescription>
-            Personalized recommendations to boost your brand health
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {recommendations.map((rec, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
-                <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm">{rec}</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Strengths and Weaknesses */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Strengths */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-700">
+              <CheckCircle className="h-5 w-5" />
+              Your Brand Strengths
+            </CardTitle>
+            <CardDescription>
+              Areas where your brand is performing well
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {strengths.map((strength, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-100">
+                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-sm text-green-800 font-medium">{strength}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Weaknesses */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-red-700">
+              <Target className="h-5 w-5" />
+              Areas for Improvement
+            </CardTitle>
+            <CardDescription>
+              Focus areas to strengthen your brand
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {weaknesses.map((weakness, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-red-50 border border-red-100">
+                  <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-sm text-red-800 font-medium">{weakness}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* CTA Section */}
       <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
