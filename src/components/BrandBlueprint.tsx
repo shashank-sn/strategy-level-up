@@ -422,57 +422,283 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                   <Palette className="w-5 h-5 text-primary" />
                   Brand Asset Hub
                 </CardTitle>
+                <p className="text-muted-foreground">
+                  Organize and manage all your brand assets in one centralized location
+                </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="text-center py-8 border-2 border-dashed border-muted rounded-lg">
-                  <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-medium mb-2">Upload Your Brand Assets</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Create a centralized hub for logos, colors, fonts, and guidelines
-                  </p>
-                  <Button className="flex items-center gap-2">
-                    <Upload className="w-4 h-4" />
-                    Upload Assets
-                  </Button>
+                {/* Brand Assets Grid */}
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {/* Logo Files */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Palette className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Logo Files</h4>
+                        <p className="text-xs text-muted-foreground">SVG, PNG, JPG formats</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <Upload className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">Drop logo files here</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample uploaded file */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">logo-primary.svg</p>
+                            <p className="text-xs text-muted-foreground">248 KB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Brand Colors */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <div className="w-5 h-5 bg-gradient-to-br from-red-400 to-blue-400 rounded" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Color Palette</h4>
+                        <p className="text-xs text-muted-foreground">HEX, RGB, CMYK codes</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <div className="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">Upload color swatches</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample color palette */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1">
+                            <div className="w-4 h-4 bg-blue-600 rounded-sm" />
+                            <div className="w-4 h-4 bg-green-500 rounded-sm" />
+                            <div className="w-4 h-4 bg-orange-400 rounded-sm" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">brand-colors.ase</p>
+                            <p className="text-xs text-muted-foreground">12 KB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Typography */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <span className="text-purple-600 font-bold text-lg">Aa</span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Typography</h4>
+                        <p className="text-xs text-muted-foreground">Font files & specimens</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <span className="text-2xl font-bold text-muted-foreground mb-2 block">Aa</span>
+                        <p className="text-sm text-muted-foreground mb-2">Upload font files</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample font */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                            <span className="text-primary font-bold text-sm">Aa</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Inter-Regular.woff2</p>
+                            <p className="text-xs text-muted-foreground">156 KB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Photography */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <div className="w-5 h-5 bg-gradient-to-br from-yellow-400 to-orange-400 rounded" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Photography</h4>
+                        <p className="text-xs text-muted-foreground">Style guide & samples</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-400 rounded mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">Upload style guide</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample photography */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-400 rounded" />
+                          <div>
+                            <p className="text-sm font-medium">photo-style-guide.pdf</p>
+                            <p className="text-xs text-muted-foreground">2.4 MB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Icons */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Zap className="w-5 h-5 text-red-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Icon Library</h4>
+                        <p className="text-xs text-muted-foreground">SVG icons & guidelines</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <Zap className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">Upload icon set</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample icons */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                            <div className="grid grid-cols-2 gap-0.5">
+                              <div className="w-1 h-1 bg-primary rounded-full" />
+                              <div className="w-1 h-1 bg-primary rounded-full" />
+                              <div className="w-1 h-1 bg-primary rounded-full" />
+                              <div className="w-1 h-1 bg-primary rounded-full" />
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">icon-library.zip</p>
+                            <p className="text-xs text-muted-foreground">89 KB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* Brand Guidelines */}
+                  <Card className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Brand Guidelines</h4>
+                        <p className="text-xs text-muted-foreground">Usage & standards</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
+                        <FileText className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground mb-2">Upload guidelines</p>
+                        <Button size="sm" variant="outline">
+                          <Upload className="w-3 h-3 mr-1" />
+                          Upload
+                        </Button>
+                      </div>
+                      
+                      {/* Sample guidelines */}
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">brand-guidelines.pdf</p>
+                            <p className="text-xs text-muted-foreground">5.2 MB</p>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost">
+                          <Download className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2">
-                  <div>
-                    <h4 className="font-medium mb-3">Recommended Assets</h4>
-                    <ul className="text-sm space-y-2">
-                      <li className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-primary rounded-full" />
-                        Logo files (SVG, PNG, JPG)
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-primary rounded-full" />
-                        Brand color palette
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-primary rounded-full" />
-                        Typography specimens
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-primary rounded-full" />
-                        Photography style guide
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-primary rounded-full" />
-                        Icon library
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-primary" />
-                      Your Brand Hub
-                    </h4>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Access your complete brand strategy and assets at:
-                    </p>
-                    <div className="bg-background p-2 rounded border text-sm font-mono">
-                      {mockBrandData.companyName.toLowerCase().replace(/\s+/g, '')}.yourbrandstrategist.com
+                {/* Brand Hub Info */}
+                <div className="bg-gradient-to-r from-primary/5 to-primary/10 p-6 rounded-lg mt-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Globe className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium mb-2">Your Brand Hub</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        All your brand assets and guidelines are accessible to your team at your custom subdomain:
+                      </p>
+                      <div className="bg-background p-3 rounded border text-sm font-mono mb-4">
+                        {mockBrandData.companyName.toLowerCase().replace(/\s+/g, '')}.yourbrandstrategist.com
+                      </div>
+                      <div className="flex gap-3">
+                        <Button size="sm" className="flex items-center gap-2">
+                          <Share2 className="w-3 h-3" />
+                          Share Hub
+                        </Button>
+                        <Button size="sm" variant="outline" className="flex items-center gap-2">
+                          <Download className="w-3 h-3" />
+                          Download All Assets
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
