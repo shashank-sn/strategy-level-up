@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Target, TrendingUp, Zap, Award } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Zap, Award, CheckCircle } from "lucide-react";
 
 interface GapAnalysisData {
   brand_gap: string;
@@ -49,7 +49,8 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
     "Opportunity Identification", 
     "Differentiation Assessment",
     "USP Development",
-    "Gap Prioritization"
+    "Gap Prioritization",
+    "Summary & Review"
   ];
 
   const updateData = (field: keyof GapAnalysisData, value: any) => {
@@ -76,6 +77,7 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
       case 2: return true; // Sliders always have values
       case 3: return data.unique_selling_proposition.trim() !== "";
       case 4: return true; // Priority matrix always has values
+      case 5: return true; // Summary page - always can proceed
       default: return false;
     }
   };
@@ -362,6 +364,116 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
                     </div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 5:
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-primary" />
+                Gap Analysis Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-muted/50 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">Your Gap Analysis Complete</h4>
+                <p className="text-sm text-muted-foreground">
+                  Review your gap analysis and differentiation strategy below. This information will 
+                  guide your brand positioning and competitive strategy.
+                </p>
+              </div>
+
+              <div className="grid gap-6">
+                {/* Brand Gap */}
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                    <Target className="w-4 h-4 text-primary" />
+                    Brand Perception Gap
+                  </h4>
+                  <p className="text-sm text-muted-foreground">{data.brand_gap || "Not specified"}</p>
+                </div>
+
+                {/* Opportunity Gap */}
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-primary" />
+                    Primary Market Opportunity
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {opportunityOptions.find(opt => opt.value === data.opportunity_gap)?.label || "Not selected"}
+                  </p>
+                </div>
+
+                {/* 4Ps Differentiation */}
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-4 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-primary" />
+                    Differentiation Strengths
+                  </h4>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm">Product/Service:</span>
+                      <span className="text-sm font-medium text-primary">{data.product_differentiation}/10</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Distribution:</span>
+                      <span className="text-sm font-medium text-primary">{data.place_differentiation}/10</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Marketing:</span>
+                      <span className="text-sm font-medium text-primary">{data.promotion_differentiation}/10</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Pricing:</span>
+                      <span className="text-sm font-medium text-primary">{data.price_differentiation}/10</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* USP */}
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                    <Award className="w-4 h-4 text-primary" />
+                    Unique Selling Proposition
+                  </h4>
+                  <p className="text-sm text-muted-foreground italic">
+                    "{data.unique_selling_proposition || "Not specified"}"
+                  </p>
+                </div>
+
+                {/* Priority Matrix */}
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-4">Gap Priority Assessment</h4>
+                  <div className="space-y-3">
+                    {[
+                      { key: "brand_gap", label: "Brand Gap" },
+                      { key: "market_gap", label: "Market Gap" },
+                      { key: "opportunity_gap", label: "Opportunity Gap" }
+                    ].map(({ key, label }) => (
+                      <div key={key} className="flex justify-between items-center">
+                        <span className="text-sm font-medium">{label}:</span>
+                        <div className="text-sm text-muted-foreground">
+                          Impact: {data.priority_gaps[key as keyof typeof data.priority_gaps].impact}/10, 
+                          Feasibility: {data.priority_gaps[key as keyof typeof data.priority_gaps].feasibility}/10
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-primary/5 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">Next Steps</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Use your USP as the foundation for all marketing messages</li>
+                  <li>• Address high-impact, high-feasibility gaps first</li>
+                  <li>• Monitor competitor responses to your differentiation strategy</li>
+                  <li>• Regularly reassess gaps as market conditions change</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
