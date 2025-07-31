@@ -25,84 +25,96 @@ const BrandJourney = () => {
       title: "Brand Setup",
       description: "Initial setup for your company.",
       icon: Settings,
-      completed: true
+      completed: true,
+      available: true
     },
     {
       id: 2,
       title: "Brand Audit",
       description: "Assess your current brand perception.",
       icon: Search,
-      completed: true
+      completed: true,
+      available: true
     },
     {
       id: 3,
       title: "Brand Foundation – Purpose, Vision & Mission",
       description: "Why these statements are the North Star of your brand.",
       icon: Lightbulb,
-      completed: false
+      completed: false,
+      available: true
     },
     {
       id: 4,
       title: "Business Goals & Measurement",
       description: "Connecting your grand vision to actionable, measurable goals.",
       icon: Target,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 5,
       title: "The Founder's Story & Brand Challenge",
       description: "The power of narrative and identifying your brand's biggest hurdles.",
       icon: BookOpen,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 6,
       title: "Brand Personality & Values",
       description: "Defining the human essence of your brand.",
       icon: Heart,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 7,
       title: "Audience Deep Dive – Persona & Empathy",
       description: "Understanding who you serve at a profound level.",
       icon: Users,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 8,
       title: "Competitor Analysis & Market Trends",
       description: "Knowing your landscape and staying ahead.",
       icon: TrendingUp,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 9,
       title: "Gap Analysis & Differentiators",
       description: "Identifying where you stand and how you'll stand out.",
       icon: Minus,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 10,
       title: "Positioning & Brand Promise",
       description: "Crafting your unique spot in the market and what you guarantee.",
       icon: MapPin,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 11,
       title: "Concept & Living the Brand",
       description: "Translating strategy into tangible expression.",
       icon: Palette,
-      completed: false
+      completed: false,
+      available: false
     },
     {
       id: 12,
       title: "Strategic Pillars & Action Prioritization",
       description: "This section will cover the transition from strategy to execution by defining your focus areas.",
       icon: CheckSquare,
-      completed: false
+      completed: false,
+      available: false
     }
   ];
 
@@ -143,6 +155,8 @@ const BrandJourney = () => {
                   className={`relative transition-all duration-300 ${
                     module.completed 
                       ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' 
+                      : module.available
+                      ? 'border-primary/50 hover:border-primary cursor-pointer'
                       : 'opacity-60 border-muted'
                   }`}
                 >
@@ -155,7 +169,7 @@ const BrandJourney = () => {
                     </div>
                   )}
                   
-                  {!module.completed && (
+                  {!module.completed && !module.available && (
                     <div className="absolute -top-2 -right-2">
                       <Badge variant="secondary" className="bg-muted">
                         <Lock className="w-3 h-3 mr-1" />
@@ -168,19 +182,21 @@ const BrandJourney = () => {
                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${
                       module.completed 
                         ? 'bg-green-500 text-white' 
+                        : module.available
+                        ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
                     }`}>
                       <IconComponent className="w-6 h-6" />
                     </div>
                     
                     <CardTitle className={`text-lg leading-tight ${
-                      module.completed ? 'text-foreground' : 'text-muted-foreground'
+                      module.completed || module.available ? 'text-foreground' : 'text-muted-foreground'
                     }`}>
                       {module.title}
                     </CardTitle>
                     
                     <CardDescription className={`text-sm ${
-                      module.completed ? 'text-muted-foreground' : 'text-muted-foreground/60'
+                      module.completed || module.available ? 'text-muted-foreground' : 'text-muted-foreground/60'
                     }`}>
                       {module.description}
                     </CardDescription>
@@ -188,9 +204,9 @@ const BrandJourney = () => {
 
                   <CardContent>
                     <Button 
-                      variant={module.completed ? "secondary" : "outline"}
+                      variant={module.completed ? "secondary" : module.available ? "default" : "outline"}
                       className="w-full"
-                      disabled={!module.completed}
+                      disabled={!module.available}
                     >
                       {module.completed ? "View Results" : "Start"}
                     </Button>
