@@ -12,6 +12,7 @@ import BrandFoundationModule from "./pages/modules/BrandFoundationModule";
 import BusinessGoalsModule from "./pages/modules/BusinessGoalsModule";
 import FounderStoryModule from "./pages/modules/FounderStoryModule";
 import BrandPersonalityModule from "./pages/modules/BrandPersonalityModule";
+import AudiencePersonaModule from "./pages/modules/AudiencePersonaModule";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/brand-journey/business-goals" element={<BusinessGoalsModule />} />
           <Route path="/brand-journey/founder-story" element={<FounderStoryModule />} />
           <Route path="/brand-journey/personality" element={<BrandPersonalityModule />} />
+          <Route path="/brand-journey/audience" element={<AudiencePersonaModule />} />
           <Route path="/pricing" element={<Pricing />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
