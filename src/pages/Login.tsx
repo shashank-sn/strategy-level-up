@@ -62,65 +62,6 @@ const Login = () => {
               Continue with Google
             </Button>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with email</span>
-              </div>
-            </div>
-
-            {/* Email/Password Form */}
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input 
-                    id="email"
-                    type="email" 
-                    placeholder="Enter your email"
-                    className="pl-10 py-6"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input 
-                    id="password"
-                    type="password" 
-                    placeholder="Enter your password"
-                    className="pl-10 py-6"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded" />
-                  <span className="text-muted-foreground">Remember me</span>
-                </label>
-                <Link to="/forgot-password" className="text-primary hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
-
-              <Button variant="hero" className="w-full py-6 text-base" size="lg">
-                Sign In
-              </Button>
-            </div>
-
-            <div className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-primary hover:underline font-medium">
-                Sign up
-              </Link>
-            </div>
-
             {/* Progress Preview */}
             <div className="bg-secondary/50 rounded-lg p-4 mt-6">
               <div className="flex items-center gap-3 mb-2">

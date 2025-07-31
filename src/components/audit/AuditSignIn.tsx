@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, Mail, Lock } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 interface AuditSignInProps {
   onNext: () => void;
@@ -13,19 +9,9 @@ interface AuditSignInProps {
 }
 
 const AuditSignIn = ({ onNext, onPrevious, userName }: AuditSignInProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(true);
-
   const handleGoogleSignIn = () => {
     // TODO: Implement Google sign-in
     console.log("Google sign-in clicked");
-    onNext();
-  };
-
-  const handleEmailAuth = () => {
-    // TODO: Implement email authentication
-    console.log("Email auth:", { email, password, isSignUp });
     onNext();
   };
 
@@ -65,79 +51,12 @@ const AuditSignIn = ({ onNext, onPrevious, userName }: AuditSignInProps) => {
             </svg>
             Continue with Google
           </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with email</span>
-            </div>
-          </div>
-
-          {/* Email Form */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder={isSignUp ? "Create a password" : "Enter your password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
-            <Button 
-              className="w-full" 
-              onClick={handleEmailAuth}
-              disabled={!email || !password}
-            >
-              {isSignUp ? "Create Account & Continue" : "Sign In & Continue"}
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                className="text-sm text-muted-foreground hover:text-foreground"
-                onClick={() => setIsSignUp(!isSignUp)}
-              >
-                {isSignUp 
-                  ? "Already have an account? Sign in" 
-                  : "Don't have an account? Sign up"
-                }
-              </button>
-            </div>
-          </div>
         </div>
 
-        <div className="flex justify-between pt-4">
+        <div className="flex justify-start pt-4">
           <Button variant="outline" onClick={onPrevious}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Details
-          </Button>
-          <Button variant="ghost" onClick={onNext}>
-            Skip for now
-            <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
 
