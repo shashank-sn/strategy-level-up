@@ -35,9 +35,9 @@ const Hero = () => {
 
             <div className="flex flex-wrap gap-4">
               <Button variant="hero" size="lg" asChild>
-                <Link to="/login">
+                <Link to="/brand-audit">
                   <Play className="w-5 h-5 mr-2" />
-                  Start Your Journey
+                  Start Free Brand Audit
                 </Link>
               </Button>
               <Button variant="outline" size="lg">
