@@ -24,6 +24,7 @@ interface AudienceQuestionnaireProps {
 }
 
 export const AudienceQuestionnaire = ({ onComplete, onBack }: AudienceQuestionnaireProps) => {
+  const [currentProfile, setCurrentProfile] = useState(0);
   const [personas, setPersonas] = useState<PersonaData[]>([
     {
       persona_name: "",
@@ -75,11 +76,10 @@ export const AudienceQuestionnaire = ({ onComplete, onBack }: AudienceQuestionna
            persona.day_in_life.trim() !== "";
   };
 
-  const canSubmit = personas.some(isPersonaComplete);
+  const canSubmit = personas.every(isPersonaComplete);
 
   const handleSubmit = () => {
-    const completedPersonas = personas.filter(isPersonaComplete);
-    onComplete(completedPersonas);
+    onComplete(personas);
   };
 
   const renderPersonaForm = (persona: PersonaData, index: number) => (
@@ -242,8 +242,26 @@ export const AudienceQuestionnaire = ({ onComplete, onBack }: AudienceQuestionna
         </p>
         <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
           <Users className="w-4 h-4" />
-          <span>Create up to 3 customer personas (at least 1 required)</span>
+          <span>All 3 customer personas are required</span>
         </div>
+      </div>
+
+      {/* Profile Navigation */}
+      <div className="flex justify-center gap-2 mb-6">
+        {[1, 2, 3].map((profileNum) => (
+          <Button
+            key={profileNum}
+            variant={currentProfile === profileNum - 1 ? "default" : "outline"}
+            onClick={() => setCurrentProfile(profileNum - 1)}
+            className="flex items-center gap-2"
+          >
+            <User className="w-4 h-4" />
+            Profile {profileNum}
+            {isPersonaComplete(personas[profileNum - 1]) && (
+              <span className="w-2 h-2 bg-green-500 rounded-full ml-1" />
+            )}
+          </Button>
+        ))}
       </div>
 
       <Card className="bg-muted/50">
@@ -272,7 +290,7 @@ export const AudienceQuestionnaire = ({ onComplete, onBack }: AudienceQuestionna
         </CardContent>
       </Card>
 
-      {personas.map((persona, index) => renderPersonaForm(persona, index))}
+      {renderPersonaForm(personas[currentProfile], currentProfile)}
 
       {/* Navigation */}
       <div className="flex justify-between">
