@@ -128,7 +128,7 @@ const Features = () => {
         </div>
 
         {/* Gamification Features */}
-        <div className="bg-card rounded-2xl p-8 lg:p-12 shadow-sm border max-w-6xl mx-auto">
+        <div className="bg-background/40 backdrop-blur-xl rounded-2xl p-8 lg:p-12 shadow-2xl border border-white/10 max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               <Gamepad2 className="w-3 h-3 mr-1" />
