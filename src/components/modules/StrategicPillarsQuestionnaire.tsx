@@ -39,6 +39,7 @@ interface StrategicPillarsQuestionnaireProps {
 
 export const StrategicPillarsQuestionnaire = ({ onComplete, onBack }: StrategicPillarsQuestionnaireProps) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [newAction, setNewAction] = useState(""); // Move this to top level
   const [data, setData] = useState<StrategicPillarsData>({
     strategic_pillars: [
       { name: "", purpose: "", priority_action: "", action_owner: "", action_deadline: "" },
@@ -515,8 +516,6 @@ export const StrategicPillarsQuestionnaire = ({ onComplete, onBack }: StrategicP
         );
 
       case 4:
-        const [newAction, setNewAction] = useState("");
-        
         return (
           <Card>
             <CardHeader>
