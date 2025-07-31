@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import BrandAudit from "./pages/BrandAudit";
 import BrandJourney from "./pages/BrandJourney";
 import BrandFoundationModule from "./pages/modules/BrandFoundationModule";
+import BusinessGoalsModule from "./pages/modules/BusinessGoalsModule";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/brand-audit" element={<BrandAudit />} />
           <Route path="/brand-journey" element={<BrandJourney />} />
           <Route path="/brand-journey/foundation" element={<BrandFoundationModule />} />
+          <Route path="/brand-journey/business-goals" element={<BusinessGoalsModule />} />
           <Route path="/pricing" element={<Pricing />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
