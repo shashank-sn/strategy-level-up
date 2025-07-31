@@ -19,6 +19,28 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
   ).length;
   const completionRate = totalAnswers > 0 ? Math.round((answeredQuestions / totalAnswers) * 100) : 0;
 
+  const generateStrategySummary = (answers: Record<string, any>): string => {
+    const { purpose, vision, mission } = answers;
+    
+    let summary = "Your brand foundation strategy is now taking shape. ";
+    
+    if (purpose) {
+      summary += `Your brand exists because ${purpose.toLowerCase()}. `;
+    }
+    
+    if (vision) {
+      summary += `You're working toward a future where ${vision.toLowerCase()}. `;
+    }
+    
+    if (mission) {
+      summary += `To achieve this vision, your approach will be to ${mission.toLowerCase()}. `;
+    }
+    
+    summary += "These foundational elements will guide every brand decision you make moving forward, ensuring consistency and authenticity in how you present yourself to the world.";
+    
+    return summary;
+  };
+
   const keyTakeaways = [
     "Your brand foundation provides the strategic direction for all future decisions",
     "Clear purpose, vision, and mission statements guide authentic brand building", 
@@ -48,20 +70,15 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-primary" />
-            Your Strategy Summary
+            Your Brand Foundation Strategy
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {Object.entries(answers).map(([key, value]) => (
-            <div key={key} className="border-l-4 border-primary/20 pl-4">
-              <h4 className="font-medium capitalize mb-1">
-                {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || 'Not answered'}
-              </p>
-            </div>
-          ))}
+        <CardContent>
+          <div className="prose prose-sm max-w-none">
+            <p className="text-muted-foreground leading-relaxed">
+              {generateStrategySummary(answers)}
+            </p>
+          </div>
         </CardContent>
       </Card>
 
