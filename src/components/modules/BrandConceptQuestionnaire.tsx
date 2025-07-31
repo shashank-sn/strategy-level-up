@@ -102,29 +102,99 @@ export const BrandConceptQuestionnaire = ({ onComplete, onBack }: BrandConceptQu
     };
 
     let personalityType = "Balanced";
+    let communicationStyle = "versatile";
+    
     if (voiceAnalysis.professional > voiceAnalysis.approachable && voiceAnalysis.professional > voiceAnalysis.inspiring) {
-      personalityType = "Professional & Authoritative";
+      personalityType = "Professional Authority";
+      communicationStyle = "expert-driven and credible";
     } else if (voiceAnalysis.approachable > voiceAnalysis.professional && voiceAnalysis.approachable > voiceAnalysis.inspiring) {
-      personalityType = "Approachable & Human";
+      personalityType = "Approachable Human";
+      communicationStyle = "warm and relatable";
     } else if (voiceAnalysis.inspiring > voiceAnalysis.professional && voiceAnalysis.inspiring > voiceAnalysis.approachable) {
-      personalityType = "Inspirational & Bold";
+      personalityType = "Inspirational Leader";
+      communicationStyle = "motivating and forward-thinking";
     }
 
-    return { personalityType, voiceAnalysis };
+    return { personalityType, communicationStyle, voiceAnalysis };
   };
 
   const getTouchpointConsistency = () => {
     const touchpoints = [
-      { name: "Website", content: data.touchpoint_website_headline },
-      { name: "Social Media", content: data.touchpoint_social_bio },
-      { name: "Customer Service", content: data.touchpoint_customer_service },
-      { name: "Packaging", content: data.touchpoint_packaging }
+      { name: "Website", content: data.touchpoint_website_headline, critical: true },
+      { name: "Social Media", content: data.touchpoint_social_bio, critical: true },
+      { name: "Customer Service", content: data.touchpoint_customer_service, critical: true },
+      { name: "Packaging", content: data.touchpoint_packaging, critical: false }
     ];
 
     const completedTouchpoints = touchpoints.filter(tp => tp.content.trim() !== "");
+    const criticalCompleted = touchpoints.filter(tp => tp.critical && tp.content.trim() !== "");
     const coverage = (completedTouchpoints.length / touchpoints.length) * 100;
+    const criticalCoverage = (criticalCompleted.length / touchpoints.filter(tp => tp.critical).length) * 100;
 
-    return { touchpoints, completedTouchpoints, coverage };
+    return { touchpoints, completedTouchpoints, coverage, criticalCoverage };
+  };
+
+  const getBrandCoherence = () => {
+    const personality = getBrandPersonality();
+    const touchpoints = getTouchpointConsistency();
+    
+    // Analyze consistency between voice/tone and touchpoint expressions
+    const hasConceptClarity = data.brand_concept_translation.length > 100;
+    const hasInternalAlignment = data.internal_brand_living.length > 50;
+    const hasVisualDirection = data.visual_inspiration_notes.length > 30;
+    
+    let coherenceScore = 0;
+    if (hasConceptClarity) coherenceScore += 25;
+    if (hasInternalAlignment) coherenceScore += 25;
+    if (touchpoints.criticalCoverage === 100) coherenceScore += 30;
+    if (hasVisualDirection) coherenceScore += 20;
+    
+    let coherenceLevel = "Developing";
+    if (coherenceScore >= 80) coherenceLevel = "Strong";
+    else if (coherenceScore >= 60) coherenceLevel = "Good";
+    else if (coherenceScore >= 40) coherenceLevel = "Moderate";
+    
+    return { 
+      coherenceScore, 
+      coherenceLevel, 
+      hasConceptClarity, 
+      hasInternalAlignment, 
+      hasVisualDirection,
+      personality
+    };
+  };
+
+  const getStrategicInsights = () => {
+    const coherence = getBrandCoherence();
+    const touchpoints = getTouchpointConsistency();
+    
+    let primaryStrength = "brand concept development";
+    let improvementArea = "touchpoint consistency";
+    let strategicFocus = "building foundational brand expression";
+    
+    if (coherence.coherenceScore >= 80) {
+      strategicFocus = "optimizing and scaling brand expression";
+      primaryStrength = "comprehensive brand coherence";
+      improvementArea = "continuous refinement and measurement";
+    } else if (coherence.coherenceScore >= 60) {
+      strategicFocus = "strengthening brand consistency";
+      primaryStrength = coherence.hasConceptClarity ? "clear brand concept" : "strong voice definition";
+      improvementArea = touchpoints.criticalCoverage < 100 ? "touchpoint implementation" : "visual identity development";
+    }
+    
+    const quickWins = [];
+    if (touchpoints.criticalCoverage < 100) quickWins.push("Complete critical touchpoint definitions");
+    if (!coherence.hasVisualDirection) quickWins.push("Develop visual identity guidelines");
+    if (!coherence.hasInternalAlignment) quickWins.push("Strengthen internal brand culture");
+    
+    return { 
+      primaryStrength, 
+      improvementArea, 
+      strategicFocus, 
+      quickWins,
+      coherence,
+      touchpoints
+    };
   };
 
   const renderStepContent = () => {
@@ -462,143 +532,215 @@ export const BrandConceptQuestionnaire = ({ onComplete, onBack }: BrandConceptQu
         );
 
       case 5:
+        const insights = getStrategicInsights();
+        const coherence = getBrandCoherence();
         const personality = getBrandPersonality();
-        const touchpoints = getTouchpointConsistency();
         
         return (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-primary" />
-                Brand Expression Summary
+                Strategic Brand Expression Analysis
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Executive Summary */}
               <div className="bg-gradient-to-r from-primary/5 to-primary/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3">Brand Expression Strategy</h3>
+                <h3 className="text-lg font-semibold mb-3">Brand Expression Readiness</h3>
                 <p className="text-sm leading-relaxed">
-                  Your brand expresses a <strong>{personality.personalityType.toLowerCase()}</strong> personality 
-                  through {data.brand_voice_tone.join(", ").toLowerCase()} communication. 
-                  You've defined your brand concept across <strong>{touchpoints.completedTouchpoints.length}</strong> key touchpoints 
-                  ({touchpoints.coverage.toFixed(0)}% coverage), ensuring consistent brand expression.
+                  Your brand expression shows <strong>{coherence.coherenceLevel.toLowerCase()}</strong> coherence 
+                  (score: {coherence.coherenceScore}/100) with a <strong>{personality.communicationStyle}</strong> communication approach. 
+                  Current strategic focus should be on <strong>{insights.strategicFocus}</strong>, 
+                  leveraging your strength in <strong>{insights.primaryStrength}</strong>.
                 </p>
               </div>
 
-              {/* Brand Voice Profile */}
-              <div className="p-4 border rounded-lg">
-                <h4 className="font-medium mb-3 flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-primary" />
-                  Voice & Personality Profile
-                </h4>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <p className="text-sm font-medium mb-2">Selected Voice Tones:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {data.brand_voice_tone.map((tone, index) => (
-                        <span key={index} className="px-2 py-1 bg-primary/10 text-primary text-xs rounded">
-                          {tone}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-2">Personality Type:</p>
-                    <p className="text-sm text-muted-foreground">{personality.personalityType}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Brand Concept */}
-              <div className="p-4 border rounded-lg">
-                <h4 className="font-medium mb-3 flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-primary" />
-                  Core Brand Concept
-                </h4>
-                <div className="bg-muted/30 p-3 rounded text-sm">
-                  {data.brand_concept_translation}
-                </div>
-              </div>
-
-              {/* Touchpoint Strategy */}
-              <div className="p-4 border rounded-lg">
-                <h4 className="font-medium mb-4 flex items-center gap-2">
-                  <TouchpadOff className="w-4 h-4 text-primary" />
-                  Touchpoint Implementation
-                </h4>
-                <div className="space-y-3">
-                  {touchpoints.touchpoints.map((touchpoint, index) => (
-                    <div key={index} className="flex justify-between items-start">
-                      <span className="text-sm font-medium w-1/4">{touchpoint.name}:</span>
-                      <span className="text-sm text-muted-foreground w-3/4">
-                        {touchpoint.content || "Not defined"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 pt-3 border-t">
-                  <p className="text-sm text-muted-foreground">
-                    Touchpoint Coverage: <strong>{touchpoints.coverage.toFixed(0)}%</strong> 
-                    ({touchpoints.completedTouchpoints.length}/{touchpoints.touchpoints.length} completed)
-                  </p>
-                </div>
-              </div>
-
-              {/* Internal Culture */}
-              <div className="p-4 border rounded-lg">
-                <h4 className="font-medium mb-3 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-primary" />
-                  Internal Brand Living
-                </h4>
-                <div className="bg-muted/30 p-3 rounded text-sm">
-                  {data.internal_brand_living}
-                </div>
-              </div>
-
-              {/* Visual Direction */}
-              {data.visual_inspiration_notes && (
+              {/* Brand Coherence Analysis */}
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="p-4 border rounded-lg">
                   <h4 className="font-medium mb-3 flex items-center gap-2">
-                    <Upload className="w-4 h-4 text-primary" />
-                    Visual Direction
+                    <Palette className="w-4 h-4 text-green-500" />
+                    Brand Strengths
                   </h4>
-                  <div className="bg-muted/30 p-3 rounded text-sm whitespace-pre-line">
-                    {data.visual_inspiration_notes}
+                  <ul className="space-y-2 text-sm">
+                    {coherence.hasConceptClarity && (
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full" />
+                        Clear brand concept translation
+                      </li>
+                    )}
+                    {coherence.hasInternalAlignment && (
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full" />
+                        Strong internal brand culture
+                      </li>
+                    )}
+                    {insights.touchpoints.criticalCoverage === 100 && (
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full" />
+                        Complete critical touchpoints
+                      </li>
+                    )}
+                    {coherence.hasVisualDirection && (
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full" />
+                        Defined visual direction
+                      </li>
+                    )}
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-500 rounded-full" />
+                      {personality.personalityType} voice profile
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="p-4 border rounded-lg">
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <TouchpadOff className="w-4 h-4 text-orange-500" />
+                    Quick Wins Available
+                  </h4>
+                  {insights.quickWins.length > 0 ? (
+                    <ul className="space-y-2 text-sm">
+                      {insights.quickWins.map((win, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full" />
+                          {win}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Strong foundation established. Focus on optimization and scaling.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Communication Profile Analysis */}
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-medium mb-4 flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-primary" />
+                  Communication Personality Analysis
+                </h4>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{personality.voiceAnalysis.professional}</div>
+                    <div className="text-sm text-muted-foreground">Professional Tones</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {personality.voiceAnalysis.professional > 1 ? "Authority & Expertise" : "Balanced Approach"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{personality.voiceAnalysis.approachable}</div>
+                    <div className="text-sm text-muted-foreground">Approachable Tones</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {personality.voiceAnalysis.approachable > 1 ? "Human & Relatable" : "More Formal Approach"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{personality.voiceAnalysis.inspiring}</div>
+                    <div className="text-sm text-muted-foreground">Inspiring Tones</div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {personality.voiceAnalysis.inspiring > 0 ? "Motivational Edge" : "Practical Focus"}
+                    </div>
                   </div>
                 </div>
-              )}
+                <div className="mt-4 p-3 bg-muted/30 rounded text-sm">
+                  <strong>Communication Style:</strong> {personality.communicationStyle}
+                </div>
+              </div>
 
-              {/* Implementation Roadmap */}
-              <div className="bg-primary/5 p-4 rounded-lg">
-                <h4 className="font-medium mb-3">Implementation Roadmap</h4>
+              {/* Touchpoint Readiness */}
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-medium mb-4">Brand Implementation Readiness</h4>
                 <div className="space-y-3">
-                  <div>
-                    <p className="text-sm font-medium">Immediate (Next 2 weeks):</p>
-                    <ul className="text-sm text-muted-foreground mt-1 space-y-1">
-                      <li>• Update website headline and key messaging</li>
-                      <li>• Revise social media bios to reflect voice and tone</li>
-                      <li>• Brief team on internal brand living practices</li>
-                    </ul>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Critical Touchpoints:</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all" 
+                          style={{ width: `${insights.touchpoints.criticalCoverage}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium text-primary">
+                        {insights.touchpoints.criticalCoverage.toFixed(0)}%
+                      </span>
+                    </div>
                   </div>
                   
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Overall Coverage:</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all" 
+                          style={{ width: `${insights.touchpoints.coverage}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium text-primary">
+                        {insights.touchpoints.coverage.toFixed(0)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Brand Coherence:</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all" 
+                          style={{ width: `${coherence.coherenceScore}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium text-primary">
+                        {coherence.coherenceScore}/100
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Recommendations */}
+              <div className="bg-primary/5 p-4 rounded-lg">
+                <h4 className="font-medium mb-3">Strategic Action Plan</h4>
+                <div className="space-y-4">
                   <div>
-                    <p className="text-sm font-medium">Short-term (Next 30 days):</p>
-                    <ul className="text-sm text-muted-foreground mt-1 space-y-1">
-                      <li>• Develop visual brand guidelines from concept notes</li>
-                      <li>• Train customer service team on brand voice</li>
-                      <li>• Audit all touchpoints for brand consistency</li>
-                      {touchpoints.coverage < 100 && (
-                        <li>• Complete remaining touchpoint definitions</li>
+                    <p className="text-sm font-medium mb-2">Immediate Priority (Next 1-2 weeks):</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      {insights.quickWins.length > 0 ? (
+                        insights.quickWins.slice(0, 2).map((win, index) => (
+                          <li key={index}>• {win}</li>
+                        ))
+                      ) : (
+                        <>
+                          <li>• Implement brand voice guidelines across team communications</li>
+                          <li>• Update primary touchpoints with consistent messaging</li>
+                        </>
                       )}
                     </ul>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Ongoing:</p>
-                    <ul className="text-sm text-muted-foreground mt-1 space-y-1">
-                      <li>• Regular brand expression reviews with team</li>
-                      <li>• Gather customer feedback on brand perception</li>
-                      <li>• Continuously refine touchpoint experiences</li>
+                    <p className="text-sm font-medium mb-2">Short-term Goals (Next 30 days):</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Develop comprehensive brand guidelines document</li>
+                      <li>• Train team on {personality.personalityType.toLowerCase()} communication approach</li>
+                      <li>• Create brand expression audit checklist</li>
+                      {insights.touchpoints.coverage < 100 && (
+                        <li>• Complete remaining touchpoint implementations</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-medium mb-2">Long-term Focus (Next 90 days):</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Measure brand perception alignment through customer feedback</li>
+                      <li>• Optimize {insights.improvementArea} based on performance data</li>
+                      <li>• Scale brand expression across all customer interactions</li>
+                      <li>• Establish brand consistency monitoring processes</li>
                     </ul>
                   </div>
                 </div>
