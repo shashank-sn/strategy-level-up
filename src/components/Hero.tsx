@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Star, Users, Target, Zap, TrendingUp, Award, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const Hero = () => {
-  return (
-    <section className="relative py-20 lg:py-32 overflow-hidden">
+  return <section className="relative py-20 lg:py-32 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
       
@@ -60,48 +58,9 @@ const Hero = () => {
           </div>
 
           {/* Visual icons grid */}
-          <div className="grid grid-cols-3 lg:grid-cols-6 gap-8 pt-12 max-w-3xl mx-auto">
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Target className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">Strategy</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">Audience</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Award className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">Brand</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">Growth</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Zap className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">AI</span>
-            </div>
-            <div className="flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center animate-pulse">
-                <Star className="w-6 h-6 text-primary" />
-              </div>
-              <span className="text-xs text-muted-foreground">Level Up</span>
-            </div>
-          </div>
+          
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
