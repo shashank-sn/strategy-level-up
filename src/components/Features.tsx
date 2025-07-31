@@ -82,17 +82,17 @@ const gamificationFeatures = [
 
 const Features = () => {
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 max-w-4xl mx-auto">
           <Badge variant="secondary" className="mb-4">
             <Target className="w-3 h-3 mr-1" />
             Platform Features
           </Badge>
-          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl lg:text-5xl font-bold text-foreground mb-4">
             Your Brand Journey
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Complete 10 interactive modules designed to build a comprehensive brand strategy. 
             Each level unlocks new insights and brings you closer to brand clarity.
           </p>
@@ -128,16 +128,16 @@ const Features = () => {
         </div>
 
         {/* Gamification Features */}
-        <div className="bg-white rounded-2xl p-8 lg:p-12 shadow-sm">
+        <div className="bg-card rounded-2xl p-8 lg:p-12 shadow-sm border max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               <Gamepad2 className="w-3 h-3 mr-1" />
               Gamified Learning
             </Badge>
-            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-4">
               Learn Through Play
             </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Our platform makes brand strategy development engaging and interactive. 
               Progress through levels, earn achievements, and build expertise step by step.
             </p>
@@ -150,8 +150,8 @@ const Features = () => {
                   <feature.icon className="w-8 h-8 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  <h4 className="font-semibold text-foreground mb-2">{feature.title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </div>
             ))}
