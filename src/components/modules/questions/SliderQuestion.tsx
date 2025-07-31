@@ -29,12 +29,13 @@ export const SliderQuestion = ({ question, value, onChange }: SliderQuestionProp
         </div>
         
         <Slider
-          value={value !== undefined ? [value] : []}
+          value={value !== undefined ? [value] : [5]}
           onValueChange={(values) => onChange(values[0])}
           min={min}
           max={max}
           step={1}
           className="w-full"
+          defaultValue={[5]}
         />
         
         <div className="flex justify-between text-xs text-muted-foreground">
