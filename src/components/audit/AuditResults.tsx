@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ArrowLeft, TrendingUp, Target, Lightbulb, CheckCircle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { UserDetails, AuditAnswers } from "@/pages/BrandAudit";
 
 interface AuditResultsProps {
@@ -163,9 +164,11 @@ const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) =
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button size="lg" className="px-8">
-                Start Full Brand Journey
-                <ArrowRight className="h-4 w-4 ml-2" />
+              <Button size="lg" className="px-8" asChild>
+                <Link to="/pricing">
+                  Start Full Brand Journey
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Link>
               </Button>
               <Button variant="outline" size="lg">
                 Download Your Report
