@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   Target, 
   Users, 
@@ -156,6 +157,19 @@ const Features = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Signup CTA */}
+        <div className="text-center mt-16 pt-12 border-t border-border">
+          <h3 className="text-2xl font-bold text-foreground mb-4">
+            Ready to Build Your Brand?
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            Join thousands of entrepreneurs who have transformed their businesses with our comprehensive brand strategy platform. Start your journey today.
+          </p>
+          <Button size="lg" className="px-8">
+            Get Started Now
+          </Button>
         </div>
       </div>
     </section>
