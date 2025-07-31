@@ -38,6 +38,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/brand-audit" element={<BrandAudit />} />
           <Route path="/brand-journey" element={<BrandJourney />} />
+          {/* Legacy brand-journey routes */}
           <Route path="/brand-journey/foundation" element={<BrandFoundationModule />} />
           <Route path="/brand-journey/business-goals" element={<BusinessGoalsModule />} />
           <Route path="/brand-journey/founder-story" element={<FounderStoryModule />} />
@@ -47,6 +48,16 @@ const App = () => (
           <Route path="/brand-journey/positioning" element={<PositioningModule />} />
           <Route path="/brand-journey/brand-concept" element={<BrandConceptModule />} />
           <Route path="/brand-journey/strategic-pillars" element={<StrategicPillarsModule />} />
+          {/* Main module routes */}
+          <Route path="/modules/foundation" element={<BrandFoundationModule />} />
+          <Route path="/modules/business-goals" element={<BusinessGoalsModule />} />
+          <Route path="/modules/founder-story" element={<FounderStoryModule />} />
+          <Route path="/modules/personality" element={<BrandPersonalityModule />} />
+          <Route path="/modules/audience" element={<AudiencePersonaModule />} />
+          <Route path="/modules/gap-analysis" element={<GapAnalysisModule />} />
+          <Route path="/modules/positioning" element={<PositioningModule />} />
+          <Route path="/modules/brand-concept" element={<BrandConceptModule />} />
+          <Route path="/modules/strategic-pillars" element={<StrategicPillarsModule />} />
           <Route path="/brand-blueprint" element={<BrandBlueprintPage />} />
           <Route path="/progress" element={<ProgressDashboardPage />} />
           <Route path="/pricing" element={<Pricing />} />
