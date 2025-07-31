@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight, CheckCircle, TrendingUp, Target, Lightbulb } from "lucide-react";
 import AuditIntro from "@/components/audit/AuditIntro";
 import UserDetailsForm from "@/components/audit/UserDetailsForm";
+import AuditSignIn from "@/components/audit/AuditSignIn";
 import AuditQuestions from "@/components/audit/AuditQuestions";
 import AuditResults from "@/components/audit/AuditResults";
 
@@ -35,6 +36,7 @@ const BrandAudit = () => {
   const steps = [
     "Introduction",
     "Your Details", 
+    "Create Account",
     "Brand Assessment",
     "Results"
   ];
@@ -66,6 +68,14 @@ const BrandAudit = () => {
         );
       case 2:
         return (
+          <AuditSignIn
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            userName={userDetails.name}
+          />
+        );
+      case 3:
+        return (
           <AuditQuestions
             answers={auditAnswers}
             setAnswers={setAuditAnswers}
@@ -73,7 +83,7 @@ const BrandAudit = () => {
             onPrevious={handlePrevious}
           />
         );
-      case 3:
+      case 4:
         return (
           <AuditResults
             userDetails={userDetails}

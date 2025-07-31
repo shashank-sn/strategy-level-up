@@ -182,7 +182,7 @@ const AuditQuestions = ({ answers, setAnswers, onNext, onPrevious }: AuditQuesti
         <div className="flex justify-between pt-4">
           <Button variant="outline" onClick={handlePreviousQuestion}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {currentQuestion === 0 ? "Back to Details" : "Previous"}
+            {currentQuestion === 0 ? "Back to Sign In" : "Previous"}
           </Button>
           <Button onClick={handleNextQuestion} disabled={!isAnswered}>
             {currentQuestion === questions.length - 1 ? "View Results" : "Next Question"}
