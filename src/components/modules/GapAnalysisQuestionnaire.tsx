@@ -98,6 +98,47 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
     { value: "new_trend", label: "New market trend or technology we can leverage" }
   ];
 
+  // Analysis functions for summary
+  const getCompetitiveAdvantage = () => {
+    const scores = [
+      { area: "Product", score: data.product_differentiation },
+      { area: "Distribution", score: data.place_differentiation },
+      { area: "Marketing", score: data.promotion_differentiation },
+      { area: "Pricing", score: data.price_differentiation }
+    ];
+    const strongest = scores.reduce((a, b) => a.score > b.score ? a : b);
+    const weakest = scores.reduce((a, b) => a.score < b.score ? a : b);
+    const average = scores.reduce((sum, s) => sum + s.score, 0) / 4;
+    
+    return { strongest, weakest, average, scores };
+  };
+
+  const getPriorityRecommendation = () => {
+    const gaps = [
+      { type: "Brand Gap", ...data.priority_gaps.brand_gap },
+      { type: "Market Gap", ...data.priority_gaps.market_gap },
+      { type: "Opportunity Gap", ...data.priority_gaps.opportunity_gap }
+    ];
+    
+    const highPriority = gaps.filter(g => g.impact >= 7 && g.feasibility >= 6);
+    const quickWins = gaps.filter(g => g.feasibility >= 8);
+    const bigBets = gaps.filter(g => g.impact >= 8 && g.feasibility <= 5);
+    
+    return { highPriority, quickWins, bigBets };
+  };
+
+  const getStrategicInsights = () => {
+    const { strongest, weakest, average } = getCompetitiveAdvantage();
+    const { highPriority, quickWins, bigBets } = getPriorityRecommendation();
+    
+    let focus = "balanced approach";
+    if (average >= 7) focus = "leveraging strong differentiation";
+    else if (average <= 4) focus = "building foundational differentiators";
+    else focus = "selective improvement";
+    
+    return { focus, strongest, weakest, highPriority, quickWins, bigBets };
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -370,110 +411,145 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
         );
 
       case 5:
+        const insights = getStrategicInsights();
+        const advantage = getCompetitiveAdvantage();
+        const priorities = getPriorityRecommendation();
+        
         return (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-primary" />
-                Gap Analysis Summary
+                Strategic Gap Analysis
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="bg-muted/50 p-4 rounded-lg">
-                <h4 className="font-medium mb-2">Your Gap Analysis Complete</h4>
-                <p className="text-sm text-muted-foreground">
-                  Review your gap analysis and differentiation strategy below. This information will 
-                  guide your brand positioning and competitive strategy.
+              {/* Executive Summary */}
+              <div className="bg-gradient-to-r from-primary/5 to-primary/10 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-3">Executive Summary</h3>
+                <p className="text-sm leading-relaxed">
+                  Your competitive differentiation score averages <strong>{advantage.average.toFixed(1)}/10</strong>, indicating a {" "}
+                  <strong>{insights.focus}</strong> strategy is recommended. Your strongest differentiator is {" "}
+                  <strong>{advantage.strongest.area}</strong> ({advantage.strongest.score}/10), while {" "}
+                  <strong>{advantage.weakest.area}</strong> needs attention ({advantage.weakest.score}/10).
+                  {priorities.quickWins.length > 0 && ` You have ${priorities.quickWins.length} quick win(s) identified.`}
                 </p>
               </div>
 
-              <div className="grid gap-6">
-                {/* Brand Gap */}
+              {/* Strategic Recommendations */}
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <Target className="w-4 h-4 text-primary" />
-                    Brand Perception Gap
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-green-500" />
+                    Quick Wins
                   </h4>
-                  <p className="text-sm text-muted-foreground">{data.brand_gap || "Not specified"}</p>
+                  {priorities.quickWins.length > 0 ? (
+                    <ul className="space-y-2">
+                      {priorities.quickWins.map((gap, index) => (
+                        <li key={index} className="text-sm">
+                          <span className="font-medium">{gap.type}:</span> High feasibility ({gap.feasibility}/10)
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Focus on building foundational strengths first.</p>
+                  )}
                 </div>
 
-                {/* Opportunity Gap */}
                 <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-primary" />
-                    Primary Market Opportunity
+                  <h4 className="font-medium mb-3 flex items-center gap-2">
+                    <Target className="w-4 h-4 text-blue-500" />
+                    High Priority Gaps
                   </h4>
-                  <p className="text-sm text-muted-foreground">
-                    {opportunityOptions.find(opt => opt.value === data.opportunity_gap)?.label || "Not selected"}
-                  </p>
+                  {priorities.highPriority.length > 0 ? (
+                    <ul className="space-y-2">
+                      {priorities.highPriority.map((gap, index) => (
+                        <li key={index} className="text-sm">
+                          <span className="font-medium">{gap.type}:</span> High impact & feasible
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No gaps meet high-priority criteria currently.</p>
+                  )}
                 </div>
+              </div>
 
-                {/* 4Ps Differentiation */}
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-4 flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-primary" />
-                    Differentiation Strengths
-                  </h4>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Product/Service:</span>
-                      <span className="text-sm font-medium text-primary">{data.product_differentiation}/10</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Distribution:</span>
-                      <span className="text-sm font-medium text-primary">{data.place_differentiation}/10</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Marketing:</span>
-                      <span className="text-sm font-medium text-primary">{data.promotion_differentiation}/10</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Pricing:</span>
-                      <span className="text-sm font-medium text-primary">{data.price_differentiation}/10</span>
-                    </div>
-                  </div>
+              {/* USP Analysis */}
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-medium mb-3 flex items-center gap-2">
+                  <Award className="w-4 h-4 text-primary" />
+                  Your Unique Position
+                </h4>
+                <div className="bg-muted/30 p-3 rounded italic mb-3">
+                  "{data.unique_selling_proposition}"
                 </div>
+                <p className="text-sm text-muted-foreground">
+                  This USP leverages your <strong>{advantage.strongest.area.toLowerCase()}</strong> strength and addresses the {" "}
+                  <strong>{opportunityOptions.find(opt => opt.value === data.opportunity_gap)?.label.toLowerCase()}</strong> {" "}
+                  market opportunity you identified.
+                </p>
+              </div>
 
-                {/* USP */}
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-primary" />
-                    Unique Selling Proposition
-                  </h4>
-                  <p className="text-sm text-muted-foreground italic">
-                    "{data.unique_selling_proposition || "Not specified"}"
-                  </p>
-                </div>
-
-                {/* Priority Matrix */}
-                <div className="p-4 border rounded-lg">
-                  <h4 className="font-medium mb-4">Gap Priority Assessment</h4>
-                  <div className="space-y-3">
-                    {[
-                      { key: "brand_gap", label: "Brand Gap" },
-                      { key: "market_gap", label: "Market Gap" },
-                      { key: "opportunity_gap", label: "Opportunity Gap" }
-                    ].map(({ key, label }) => (
-                      <div key={key} className="flex justify-between items-center">
-                        <span className="text-sm font-medium">{label}:</span>
-                        <div className="text-sm text-muted-foreground">
-                          Impact: {data.priority_gaps[key as keyof typeof data.priority_gaps].impact}/10, 
-                          Feasibility: {data.priority_gaps[key as keyof typeof data.priority_gaps].feasibility}/10
+              {/* Competitive Positioning */}
+              <div className="p-4 border rounded-lg">
+                <h4 className="font-medium mb-4">Competitive Positioning Matrix</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">DIFFERENTIATION STRENGTHS</p>
+                    {advantage.scores
+                      .filter(s => s.score >= 7)
+                      .map((area, index) => (
+                        <div key={index} className="flex justify-between text-sm mb-1">
+                          <span>{area.area}</span>
+                          <span className="text-green-600 font-medium">{area.score}/10</span>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    {advantage.scores.filter(s => s.score >= 7).length === 0 && (
+                      <p className="text-sm text-muted-foreground">Focus on building core differentiators</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">IMPROVEMENT AREAS</p>
+                    {advantage.scores
+                      .filter(s => s.score <= 5)
+                      .map((area, index) => (
+                        <div key={index} className="flex justify-between text-sm mb-1">
+                          <span>{area.area}</span>
+                          <span className="text-orange-600 font-medium">{area.score}/10</span>
+                        </div>
+                      ))}
+                    {advantage.scores.filter(s => s.score <= 5).length === 0 && (
+                      <p className="text-sm text-muted-foreground">Strong across all areas</p>
+                    )}
                   </div>
                 </div>
               </div>
 
+              {/* Action Plan */}
               <div className="bg-primary/5 p-4 rounded-lg">
-                <h4 className="font-medium mb-2">Next Steps</h4>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Use your USP as the foundation for all marketing messages</li>
-                  <li>• Address high-impact, high-feasibility gaps first</li>
-                  <li>• Monitor competitor responses to your differentiation strategy</li>
-                  <li>• Regularly reassess gaps as market conditions change</li>
-                </ul>
+                <h4 className="font-medium mb-3">Recommended Action Plan</h4>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium">Immediate (Next 30 days):</p>
+                    <ul className="text-sm text-muted-foreground mt-1 space-y-1">
+                      <li>• Refine messaging around your USP and strongest differentiator ({advantage.strongest.area})</li>
+                      {priorities.quickWins.slice(0, 1).map((gap, index) => (
+                        <li key={index}>• Address {gap.type.toLowerCase()} (quick win opportunity)</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Short-term (Next 90 days):</p>
+                    <ul className="text-sm text-muted-foreground mt-1 space-y-1">
+                      <li>• Strengthen {advantage.weakest.area.toLowerCase()} capabilities</li>
+                      <li>• Implement brand perception improvements to close identified gaps</li>
+                      {priorities.highPriority.slice(0, 1).map((gap, index) => (
+                        <li key={index}>• Develop strategy for {gap.type.toLowerCase()}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -493,28 +569,26 @@ export const GapAnalysisQuestionnaire = ({ onComplete, onBack }: GapAnalysisQues
         </p>
       </div>
 
-      {/* Progress Steps */}
-      <div className="flex justify-center">
-        <div className="flex items-center space-x-2 bg-muted/50 p-2 rounded-lg">
-          {steps.map((step, index) => (
-            <div key={index} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                index === currentStep 
-                  ? 'bg-primary text-primary-foreground' 
-                  : index < currentStep 
-                    ? 'bg-primary/20 text-primary' 
-                    : 'bg-muted text-muted-foreground'
-              }`}>
-                {index + 1}
-              </div>
-              {index < steps.length - 1 && (
-                <div className={`w-8 h-0.5 mx-1 transition-colors ${
-                  index < currentStep ? 'bg-primary' : 'bg-muted'
-                }`} />
-              )}
-            </div>
-          ))}
-        </div>
+      {/* Progress Indicators */}
+      <div className="flex justify-center gap-2 mb-6">
+        {steps.map((step, index) => (
+          <Button
+            key={index}
+            variant={currentStep === index ? "default" : currentStep > index ? "secondary" : "outline"}
+            size="sm"
+            className="flex items-center gap-2 text-xs"
+            onClick={() => setCurrentStep(index)}
+            disabled={index > currentStep}
+          >
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium bg-background/20">
+              {index + 1}
+            </span>
+            <span className="hidden sm:inline">{step}</span>
+            {index < currentStep && (
+              <span className="w-2 h-2 bg-green-500 rounded-full ml-1" />
+            )}
+          </Button>
+        ))}
       </div>
 
       <Card className="bg-muted/50">
