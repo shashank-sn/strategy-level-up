@@ -25,98 +25,96 @@ const BrandJourney = () => {
       title: "Brand Setup",
       description: "Initial setup for your company.",
       icon: Settings,
-      completed: true,
-      available: true
+      completed: true
     },
     {
       id: 2,
       title: "Brand Audit",
       description: "Assess your current brand perception.",
       icon: Search,
-      completed: true,
-      available: true
+      completed: true
     },
     {
       id: 3,
       title: "Brand Foundation – Purpose, Vision & Mission",
       description: "Why these statements are the North Star of your brand.",
       icon: Lightbulb,
-      completed: false,
-      available: true
+      completed: false
     },
     {
       id: 4,
       title: "Business Goals & Measurement",
       description: "Connecting your grand vision to actionable, measurable goals.",
       icon: Target,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 5,
       title: "The Founder's Story & Brand Challenge",
       description: "The power of narrative and identifying your brand's biggest hurdles.",
       icon: BookOpen,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 6,
       title: "Brand Personality & Values",
       description: "Defining the human essence of your brand.",
       icon: Heart,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 7,
       title: "Audience Deep Dive – Persona & Empathy",
       description: "Understanding who you serve at a profound level.",
       icon: Users,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 8,
       title: "Competitor Analysis & Market Trends",
       description: "Knowing your landscape and staying ahead.",
       icon: TrendingUp,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 9,
       title: "Gap Analysis & Differentiators",
       description: "Identifying where you stand and how you'll stand out.",
       icon: Minus,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 10,
       title: "Positioning & Brand Promise",
       description: "Crafting your unique spot in the market and what you guarantee.",
       icon: MapPin,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 11,
       title: "Concept & Living the Brand",
       description: "Translating strategy into tangible expression.",
       icon: Palette,
-      completed: false,
-      available: false
+      completed: false
     },
     {
       id: 12,
       title: "Strategic Pillars & Action Prioritization",
       description: "This section will cover the transition from strategy to execution by defining your focus areas.",
       icon: CheckSquare,
-      completed: false,
-      available: false
+      completed: false
     }
   ];
+
+  // Find the next available module (first incomplete module)
+  const nextAvailableIndex = modules.findIndex(module => !module.completed);
+  
+  const getModuleStatus = (index: number) => {
+    const module = modules[index];
+    if (module.completed) return { available: true, isNext: false };
+    if (index === nextAvailableIndex) return { available: true, isNext: true };
+    return { available: false, isNext: false };
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
@@ -134,20 +132,21 @@ const BrandJourney = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
               <span>Progress</span>
-              <span>2 of 12 completed</span>
+              <span>{modules.filter(m => m.completed).length} of 12 completed</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-2">
               <div 
                 className="bg-primary h-2 rounded-full transition-all duration-300" 
-                style={{ width: `${(2 / 12) * 100}%` }}
+                style={{ width: `${(modules.filter(m => m.completed).length / 12) * 100}%` }}
               />
             </div>
           </div>
 
           {/* Module Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module) => {
+            {modules.map((module, index) => {
               const IconComponent = module.icon;
+              const { available, isNext } = getModuleStatus(index);
               
               return (
                 <Card 
@@ -155,7 +154,7 @@ const BrandJourney = () => {
                   className={`relative transition-all duration-300 ${
                     module.completed 
                       ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' 
-                      : module.available
+                      : available
                       ? 'border-primary/50 hover:border-primary cursor-pointer'
                       : 'opacity-60 border-muted'
                   }`}
@@ -169,7 +168,7 @@ const BrandJourney = () => {
                     </div>
                   )}
                   
-                  {!module.completed && !module.available && (
+                  {!module.completed && !available && (
                     <div className="absolute -top-2 -right-2">
                       <Badge variant="secondary" className="bg-muted">
                         <Lock className="w-3 h-3 mr-1" />
@@ -182,7 +181,7 @@ const BrandJourney = () => {
                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${
                       module.completed 
                         ? 'bg-green-500 text-white' 
-                        : module.available
+                        : available
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
                     }`}>
@@ -190,13 +189,13 @@ const BrandJourney = () => {
                     </div>
                     
                     <CardTitle className={`text-lg leading-tight ${
-                      module.completed || module.available ? 'text-foreground' : 'text-muted-foreground'
+                      module.completed || available ? 'text-foreground' : 'text-muted-foreground'
                     }`}>
                       {module.title}
                     </CardTitle>
                     
                     <CardDescription className={`text-sm ${
-                      module.completed || module.available ? 'text-muted-foreground' : 'text-muted-foreground/60'
+                      module.completed || available ? 'text-muted-foreground' : 'text-muted-foreground/60'
                     }`}>
                       {module.description}
                     </CardDescription>
@@ -204,9 +203,9 @@ const BrandJourney = () => {
 
                   <CardContent>
                     <Button 
-                      variant={module.completed ? "secondary" : module.available ? "default" : "outline"}
+                      variant={module.completed ? "secondary" : available ? "default" : "outline"}
                       className="w-full"
-                      disabled={!module.available}
+                      disabled={!available}
                     >
                       {module.completed ? "View Results" : "Start"}
                     </Button>
