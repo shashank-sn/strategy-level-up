@@ -8,7 +8,7 @@ export default function StrategicPillarsModule() {
   const handleComplete = (data: any) => {
     console.log("Strategic Pillars Module completed with data:", data);
     toast.success("Strategic blueprint and action plan completed!");
-    navigate("/brand-journey");
+    navigate("/brand-blueprint");
   };
 
   const handleBack = () => {
