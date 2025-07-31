@@ -2,64 +2,74 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Trophy, CheckCircle, Star } from "lucide-react";
-import { ModuleData } from "./ModuleWrapper";
 
 interface ModuleSummaryProps {
-  moduleData: ModuleData;
+  moduleTitle: string;
   answers: Record<string, any>;
-  onComplete: (score: number) => void;
-  onPrevious: () => void;
+  score: number;
+  onComplete: () => void;
+  onBack: () => void;
 }
 
-export const ModuleSummary = ({ moduleData, answers, onComplete, onPrevious }: ModuleSummaryProps) => {
-  // Calculate score based on completion
-  const totalQuestions = moduleData.questions.length;
+export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: ModuleSummaryProps) => {
+  // Calculate completion percentage
+  const totalAnswers = Object.keys(answers).length;
   const answeredQuestions = Object.keys(answers).filter(key => 
-    answers[key] !== undefined && answers[key] !== ''
+    answers[key] !== undefined && answers[key] !== '' && answers[key] !== null
   ).length;
-  const score = Math.round((answeredQuestions / totalQuestions) * 100);
-
-  const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 70) return 'text-yellow-600';
-    return 'text-red-600';
-  };
-
-  const getScoreBadgeVariant = (score: number) => {
-    if (score >= 90) return 'default';
-    if (score >= 70) return 'secondary';
-    return 'destructive';
-  };
+  const completionRate = totalAnswers > 0 ? Math.round((answeredQuestions / totalAnswers) * 100) : 0;
 
   const keyTakeaways = [
-    "Understanding your brand foundation is crucial for long-term success",
-    "Clear purpose, vision, and mission guide all brand decisions",
-    "Authenticity in brand messaging builds trust with your audience"
+    "Your brand foundation provides the strategic direction for all future decisions",
+    "Clear purpose, vision, and mission statements guide authentic brand building", 
+    "These core elements will be referenced throughout your brand development journey"
   ];
 
   return (
     <div className="space-y-6">
-      {/* Score Card */}
+      {/* Completion Card */}
       <Card className="border-primary/20">
         <CardHeader className="text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Trophy className={`w-10 h-10 ${getScoreColor(score)}`} />
+            <CheckCircle className="w-10 h-10 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Module Complete!</CardTitle>
-          <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="text-lg">Your Score:</span>
-            <Badge variant={getScoreBadgeVariant(score)} className="text-lg px-3 py-1">
-              {score}%
-            </Badge>
-          </div>
+          <CardTitle className="text-2xl">Strategy Complete!</CardTitle>
+          <p className="text-center text-muted-foreground mb-4">
+            You've successfully built your {moduleTitle.toLowerCase()} strategy
+          </p>
+          <Badge variant="default" className="text-lg px-4 py-2">
+            {completionRate}% Complete
+          </Badge>
         </CardHeader>
+      </Card>
+
+      {/* Your Strategy Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star className="w-5 h-5 text-primary" />
+            Your Strategy Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {Object.entries(answers).map(([key, value]) => (
+            <div key={key} className="border-l-4 border-primary/20 pl-4">
+              <h4 className="font-medium capitalize mb-1">
+                {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || 'Not answered'}
+              </p>
+            </div>
+          ))}
+        </CardContent>
       </Card>
 
       {/* Key Takeaways */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-primary" />
+            <Trophy className="w-5 h-5 text-primary" />
             Key Takeaways
           </CardTitle>
         </CardHeader>
@@ -68,42 +78,22 @@ export const ModuleSummary = ({ moduleData, answers, onComplete, onPrevious }: M
             {keyTakeaways.map((takeaway, index) => (
               <li key={index} className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span>{takeaway}</span>
+                <span className="text-sm">{takeaway}</span>
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
 
-      {/* Progress Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Progress</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div className="bg-secondary/50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-primary">{answeredQuestions}</div>
-              <div className="text-sm text-muted-foreground">Questions Answered</div>
-            </div>
-            <div className="bg-secondary/50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-primary">{totalQuestions}</div>
-              <div className="text-sm text-muted-foreground">Total Questions</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Navigation */}
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onPrevious} className="flex items-center gap-2">
+      <div className="flex gap-4 justify-center">
+        <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          Back to Questions
+          Back to Journey
         </Button>
-
-        <Button onClick={() => onComplete(score)} size="lg" className="flex items-center gap-2">
+        <Button onClick={onComplete} size="lg" className="flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
-          Complete Module
+          Continue Journey
         </Button>
       </div>
     </div>

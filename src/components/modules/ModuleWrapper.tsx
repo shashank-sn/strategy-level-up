@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ModuleIntro } from "./ModuleIntro";
-import { LearningContent } from "./LearningContent";
-import { InteractiveQuestions } from "./InteractiveQuestions";
+import { StrategyBuilding } from "./StrategyBuilding";
 import { ModuleSummary } from "./ModuleSummary";
 
 export interface ModuleData {
@@ -49,43 +48,63 @@ interface ModuleWrapperProps {
 }
 
 export const ModuleWrapper = ({ moduleData, onComplete, onBack }: ModuleWrapperProps) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const steps = ["intro", "strategy", "summary"] as const;
+  type Step = typeof steps[number];
+
+  const [currentStep, setCurrentStep] = useState<Step>("intro");
   const [answers, setAnswers] = useState<Record<string, any>>({});
-  
-  const steps = ['intro', 'learning', 'questions', 'summary'];
-  const progress = ((currentStep + 1) / steps.length) * 100;
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+    const currentIndex = steps.indexOf(currentStep);
+    if (currentIndex < steps.length - 1) {
+      setCurrentStep(steps[currentIndex + 1]);
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    const currentIndex = steps.indexOf(currentStep);
+    if (currentIndex > 0) {
+      setCurrentStep(steps[currentIndex - 1]);
     }
   };
 
-  const handleQuestionsComplete = (questionAnswers: Record<string, any>) => {
-    setAnswers(questionAnswers);
-    setCurrentStep(currentStep + 1);
+  const handleStrategyComplete = (strategyAnswers: Record<string, any>) => {
+    setAnswers(strategyAnswers);
+    setCurrentStep("summary");
   };
 
-  const handleModuleComplete = (score: number) => {
-    onComplete(answers, score);
+  const handleModuleComplete = () => {
+    onComplete(answers, 0); // No scoring for strategy building
   };
 
   const renderCurrentStep = () => {
-    switch (steps[currentStep]) {
-      case 'intro':
-        return <ModuleIntro data={moduleData.introduction} onNext={handleNext} />;
-      case 'learning':
-        return <LearningContent data={moduleData.learningContent} onNext={handleNext} onPrevious={handlePrevious} />;
-      case 'questions':
-        return <InteractiveQuestions questions={moduleData.questions} onComplete={handleQuestionsComplete} onPrevious={handlePrevious} />;
-      case 'summary':
-        return <ModuleSummary moduleData={moduleData} answers={answers} onComplete={handleModuleComplete} onPrevious={handlePrevious} />;
+    switch (currentStep) {
+      case "intro":
+        return (
+          <ModuleIntro
+            data={moduleData.introduction}
+            onNext={handleNext}
+          />
+        );
+      case "strategy":
+        return (
+          <StrategyBuilding
+            learningContent={moduleData.learningContent}
+            questions={moduleData.questions}
+            onComplete={handleStrategyComplete}
+            onPrevious={handlePrevious}
+          />
+        );
+      case "summary":
+        return (
+          <ModuleSummary
+            moduleTitle={moduleData.title}
+            answers={answers}
+            score={0}
+            onComplete={handleModuleComplete}
+            onBack={onBack}
+          />
+        );
       default:
         return null;
     }
@@ -111,15 +130,18 @@ export const ModuleWrapper = ({ moduleData, onComplete, onBack }: ModuleWrapperP
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-              <span>Module Progress</span>
-              <span>{Math.round(progress)}% Complete</span>
+              <span>
+                {currentStep === "intro" && "Introduction"}
+                {currentStep === "strategy" && "Strategy Building"}
+                {currentStep === "summary" && "Summary"}
+              </span>
+              <span>{Math.round(((steps.indexOf(currentStep) + 1) / steps.length) * 100)}% Complete</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={((steps.indexOf(currentStep) + 1) / steps.length) * 100} className="h-2" />
             <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span className={currentStep >= 0 ? 'text-primary' : ''}>Introduction</span>
-              <span className={currentStep >= 1 ? 'text-primary' : ''}>Learning</span>
-              <span className={currentStep >= 2 ? 'text-primary' : ''}>Questions</span>
-              <span className={currentStep >= 3 ? 'text-primary' : ''}>Summary</span>
+              <span className={currentStep === "intro" ? 'text-primary font-medium' : ''}>Introduction</span>
+              <span className={currentStep === "strategy" ? 'text-primary font-medium' : ''}>Strategy Building</span>
+              <span className={currentStep === "summary" ? 'text-primary font-medium' : ''}>Summary</span>
             </div>
           </div>
 
