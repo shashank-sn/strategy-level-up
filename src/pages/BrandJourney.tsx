@@ -206,6 +206,14 @@ const BrandJourney = () => {
                       variant={module.completed ? "secondary" : available ? "default" : "outline"}
                       className="w-full"
                       disabled={!available}
+                      onClick={() => {
+                        if (available && !module.completed) {
+                          // Navigate to the specific module
+                          if (module.id === 3) {
+                            window.location.href = "/brand-journey/foundation";
+                          }
+                        }
+                      }}
                     >
                       {module.completed ? "View Results" : "Start"}
                     </Button>

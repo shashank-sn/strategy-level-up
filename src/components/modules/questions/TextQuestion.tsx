@@ -30,11 +30,36 @@ export const TextQuestion = ({ question, value, onChange }: TextQuestionProps) =
     }, 2000);
   };
 
-  const examples = [
-    "Example: For a SaaS company like Salesforce, this might be...",
-    "Example: Consider how Zoom approaches this challenge...",
-    "Example: HubSpot demonstrates this principle by..."
-  ];
+  const getExamples = () => {
+    switch (question.id) {
+      case "purpose-statement":
+        return [
+          "Patagonia: Build the best product, cause no unnecessary harm, use business to inspire and implement solutions to the environmental crisis.",
+          "TED: Spread ideas.",
+          "SaaS Example (Slack): Make work life simpler, more pleasant, and more productive."
+        ];
+      case "vision-statement":
+        return [
+          "Tesla: To accelerate the world's transition to sustainable energy.",
+          "Google: To organize the world's information and make it universally accessible and useful.",
+          "SaaS Example (Zoom): A world where anyone, anywhere can connect and collaborate seamlessly."
+        ];
+      case "mission-statement":
+        return [
+          "LinkedIn: To connect the world's professionals to make them more productive and successful.",
+          "Starbucks: To inspire and nurture the human spirit – one person, one cup and one neighborhood at a time.",
+          "SaaS Example (HubSpot): To help businesses grow better by providing tools and resources that make marketing, sales, and service more effective."
+        ];
+      default:
+        return [
+          "Example: For a SaaS company like Salesforce, this might be...",
+          "Example: Consider how Zoom approaches this challenge...",
+          "Example: HubSpot demonstrates this principle by..."
+        ];
+    }
+  };
+
+  const examples = getExamples();
 
   return (
     <div className="space-y-4">
