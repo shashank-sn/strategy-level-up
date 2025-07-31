@@ -778,7 +778,7 @@ export const PositioningQuestionnaire = ({ onComplete, onBack }: PositioningQues
           className="flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {currentStep === 0 ? 'Back to Journey' : 'Previous'}
+          {currentStep === 0 ? 'Back to Progress' : 'Previous'}
         </Button>
 
         <Button

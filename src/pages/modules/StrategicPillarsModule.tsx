@@ -12,7 +12,7 @@ export default function StrategicPillarsModule() {
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

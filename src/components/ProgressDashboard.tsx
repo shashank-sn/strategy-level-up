@@ -25,15 +25,15 @@ export const ProgressDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   const moduleRoutes: Record<string, string> = {
-    'foundation': '/brand-journey/foundation',
-    'business-goals': '/brand-journey/business-goals',
-    'founder-story': '/brand-journey/founder-story',
-    'personality': '/brand-journey/personality',
-    'audience': '/brand-journey/audience',
-    'gap-analysis': '/brand-journey/gap-analysis',
-    'positioning': '/brand-journey/positioning',
-    'brand-concept': '/brand-journey/brand-concept',
-    'strategic-pillars': '/brand-journey/strategic-pillars'
+    'foundation': '/modules/foundation',
+    'business-goals': '/modules/business-goals',
+    'founder-story': '/modules/founder-story',
+    'personality': '/modules/personality',
+    'audience': '/modules/audience',
+    'gap-analysis': '/modules/gap-analysis',
+    'positioning': '/modules/positioning',
+    'brand-concept': '/modules/brand-concept',
+    'strategic-pillars': '/modules/strategic-pillars'
   };
 
   const getScoreColor = (score: number) => {

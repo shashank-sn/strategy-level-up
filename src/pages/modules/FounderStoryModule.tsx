@@ -112,11 +112,11 @@ export default function FounderStoryModule() {
   const handleComplete = (answers: Record<string, any>) => {
     console.log("Founder Story Module completed with answers:", answers);
     toast.success("Founder Story strategy completed successfully!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

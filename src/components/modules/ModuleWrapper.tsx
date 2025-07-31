@@ -118,7 +118,7 @@ export const ModuleWrapper = ({ moduleData, onComplete, onBack }: ModuleWrapperP
           <div className="flex items-center justify-between mb-6">
             <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Back to Journey
+              Back to Progress
             </Button>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-foreground">{moduleData.title}</h1>

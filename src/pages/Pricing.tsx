@@ -76,7 +76,7 @@ const Pricing = () => {
               </div>
 
               <Button size="lg" className="w-full" asChild>
-                <Link to="/brand-journey">
+                <Link to="/progress">
                   Start Your Brand Journey - $99
                 </Link>
               </Button>

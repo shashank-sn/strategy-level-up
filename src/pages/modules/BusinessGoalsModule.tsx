@@ -119,11 +119,11 @@ export default function BusinessGoalsModule() {
   const handleComplete = (answers: Record<string, any>) => {
     console.log("Business Goals Module completed with answers:", answers);
     toast.success("Business Goals strategy completed successfully!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

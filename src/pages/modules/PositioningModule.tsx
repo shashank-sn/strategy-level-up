@@ -8,11 +8,11 @@ export default function PositioningModule() {
   const handleComplete = (data: any) => {
     console.log("Positioning Module completed with data:", data);
     toast.success("Brand positioning and promise strategy completed!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

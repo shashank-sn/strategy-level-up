@@ -8,11 +8,11 @@ export default function BrandConceptModule() {
   const handleComplete = (data: any) => {
     console.log("Brand Concept Module completed with data:", data);
     toast.success("Brand concept and expression strategy completed!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

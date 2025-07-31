@@ -140,11 +140,11 @@ export default function BrandPersonalityModule() {
   const handleComplete = (answers: Record<string, any>) => {
     console.log("Brand Personality Module completed with answers:", answers);
     toast.success("Brand Personality strategy completed successfully!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

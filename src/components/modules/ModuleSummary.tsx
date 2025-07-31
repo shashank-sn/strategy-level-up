@@ -106,7 +106,7 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
       <div className="flex gap-4 justify-center">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          Back to Journey
+          Back to Progress
         </Button>
         <Button onClick={onComplete} size="lg" className="flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />

@@ -90,14 +90,14 @@ const BrandFoundationModule = () => {
   };
 
   const handleModuleComplete = (answers: Record<string, any>, score: number) => {
-    // Save the results and navigate back to journey
+    // Save the results and navigate back to progress
     console.log("Module completed:", { answers, score });
     // Here you could save to a database or local storage
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

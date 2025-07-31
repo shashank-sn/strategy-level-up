@@ -8,11 +8,11 @@ export default function GapAnalysisModule() {
   const handleComplete = (data: any) => {
     console.log("Gap Analysis Module completed with data:", data);
     toast.success("Gap analysis and differentiation strategy completed!");
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (

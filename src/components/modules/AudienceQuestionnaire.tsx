@@ -300,7 +300,7 @@ export const AudienceQuestionnaire = ({ onComplete, onBack }: AudienceQuestionna
           className="flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Journey
+          Back to Progress
         </Button>
 
         <Button

@@ -8,11 +8,11 @@ export default function AudiencePersonaModule() {
   const handleComplete = (personas: any[]) => {
     console.log("Audience Persona Module completed with personas:", personas);
     toast.success(`${personas.length} customer persona(s) created successfully!`);
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   const handleBack = () => {
-    navigate("/brand-journey");
+    navigate("/progress");
   };
 
   return (
