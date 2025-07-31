@@ -16,6 +16,7 @@ import AudiencePersonaModule from "./pages/modules/AudiencePersonaModule";
 import GapAnalysisModule from "./pages/modules/GapAnalysisModule";
 import PositioningModule from "./pages/modules/PositioningModule";
 import BrandConceptModule from "./pages/modules/BrandConceptModule";
+import StrategicPillarsModule from "./pages/modules/StrategicPillarsModule";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/brand-journey/gap-analysis" element={<GapAnalysisModule />} />
           <Route path="/brand-journey/positioning" element={<PositioningModule />} />
           <Route path="/brand-journey/brand-concept" element={<BrandConceptModule />} />
+          <Route path="/brand-journey/strategic-pillars" element={<StrategicPillarsModule />} />
           <Route path="/pricing" element={<Pricing />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
