@@ -45,7 +45,7 @@ export const ProgressDashboard = () => {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid gap-6 md:grid-cols-1 mb-8">
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
@@ -60,6 +60,23 @@ export const ProgressDashboard = () => {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">modules finished</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <div className="text-blue-600 font-bold text-sm">∑</div>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Score</p>
+                  <p className="text-2xl font-bold">
+                    {progress.modules.reduce((sum, module) => sum + module.score, 0)}
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">out of 1000 points</p>
             </CardContent>
           </Card>
         </div>
