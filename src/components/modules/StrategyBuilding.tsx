@@ -6,14 +6,16 @@ import { MCQQuestion } from "./questions/MCQQuestion";
 import { SliderQuestion } from "./questions/SliderQuestion";
 import { FillBlankQuestion } from "./questions/FillBlankQuestion";
 import { TextQuestion } from "./questions/TextQuestion";
+import { CompetitorChecklistQuestion } from "./questions/CompetitorChecklistQuestion";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Question {
   id: string;
-  type: "binary" | "mcq" | "slider" | "fill-blank" | "text";
+  type: "binary" | "mcq" | "slider" | "fill-blank" | "text" | "competitor-checklist";
   question: string;
   options?: string[];
+  competitors?: string[];
   min?: number;
   max?: number;
   placeholder?: string;
@@ -120,6 +122,18 @@ export const StrategyBuilding = ({
         return (
           <TextQuestion
             question={question}
+            value={answer}
+            onChange={(value) => handleAnswerChange(question.id, value)}
+          />
+        );
+      case "competitor-checklist":
+        return (
+          <CompetitorChecklistQuestion
+            question={{
+              id: question.id,
+              question: question.question,
+              competitors: question.competitors || []
+            }}
             value={answer}
             onChange={(value) => handleAnswerChange(question.id, value)}
           />

@@ -1,8 +1,46 @@
-import { ModuleWrapper, ModuleData } from "@/components/modules/ModuleWrapper";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ModuleIntro } from "@/components/modules/ModuleIntro";
+import { CompetitiveAnalysisStrategy } from "@/components/modules/CompetitiveAnalysisStrategy";
+import { ModuleSummary } from "@/components/modules/ModuleSummary";
+
+interface ModuleData {
+  id: string;
+  title: string;
+  description: string;
+  introduction: {
+    title: string;
+    content: string;
+    importance: string;
+  };
+  learningContent: {
+    title: string;
+    sections: Array<{
+      title: string;
+      content: string;
+      keyPoints: string[];
+    }>;
+  };
+  questions: Array<{
+    id: string;
+    type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text' | 'competitor-checklist';
+    question: string;
+    options?: string[];
+    competitors?: string[];
+    min?: number;
+    max?: number;
+    placeholder?: string;
+    required: boolean;
+  }>;
+}
 
 const CompetitiveAnalysisModule = () => {
   const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(0);
 
   const moduleData: ModuleData = {
     id: "competitive-analysis",
@@ -54,6 +92,16 @@ const CompetitiveAnalysisModule = () => {
             "Identify gaps where customer needs aren't being met",
             "Spot emerging trends that create new opportunities",
             "Connect insights to specific strategic decisions"
+          ]
+        },
+        {
+          title: "Competitive Strengths & Weaknesses Analysis",
+          content: "Systematic evaluation of each competitor across key business dimensions helps identify where they excel and where they fall short. This analysis reveals opportunities for differentiation and areas where you need to match or exceed competitor performance. Focus on attributes that matter most to your target customers.",
+          keyPoints: [
+            "Evaluate each competitor across consistent criteria",
+            "Focus on attributes that matter to your customers",
+            "Identify where competitors are vulnerable",
+            "Find opportunities to differentiate your offering"
           ]
         }
       ]
@@ -123,13 +171,20 @@ const CompetitiveAnalysisModule = () => {
         question: "Based on your understanding of your target customer and the market, what are the THREE most important new insights you've gained that could influence your brand strategy?",
         placeholder: "Example: Our target audience is increasingly prioritizing ethical sourcing, even at a higher price point. Competitor X has a very strong community, which is a key differentiator for them.",
         required: true
+      },
+      {
+        id: "competitor-checklist",
+        type: "competitor-checklist",
+        question: "For each of your 3 competitors, identify whether each business attribute is a strength or weakness for them:",
+        competitors: [], // This will be populated dynamically based on competitor names
+        required: true
       }
     ]
   };
 
-  const handleModuleComplete = (answers: Record<string, any>, score: number) => {
+  const handleModuleComplete = (answers: Record<string, any>) => {
     // Save the results and navigate back to progress
-    console.log("Competitive Analysis module completed:", { answers, score });
+    console.log("Competitive Analysis module completed:", answers);
     // Here you could save to a database or local storage
     navigate("/progress");
   };
@@ -138,12 +193,77 @@ const CompetitiveAnalysisModule = () => {
     navigate("/progress");
   };
 
+  const handleNext = () => {
+    if (currentStep < 2) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep === 0) {
+      handleBack();
+    } else {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const progress = ((currentStep + 1) / 3) * 100;
+
   return (
-    <ModuleWrapper
-      moduleData={moduleData}
-      onComplete={handleModuleComplete}
-      onBack={handleBack}
-    />
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="ghost"
+                onClick={handleBack}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Progress
+              </Button>
+              <div className="text-sm text-muted-foreground">
+                Step {currentStep + 1} of 3
+              </div>
+            </div>
+            <Progress value={progress} className="mb-4" />
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{moduleData.title}</h1>
+              <p className="text-muted-foreground">{moduleData.description}</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          {currentStep === 0 && (
+            <ModuleIntro
+              data={moduleData.introduction}
+              onNext={handleNext}
+            />
+          )}
+
+          {currentStep === 1 && (
+            <CompetitiveAnalysisStrategy
+              learningContent={moduleData.learningContent}
+              questions={moduleData.questions}
+              onComplete={handleModuleComplete}
+              onPrevious={handlePrevious}
+            />
+          )}
+
+          {currentStep === 2 && (
+            <ModuleSummary
+              moduleTitle={moduleData.title}
+              answers={{}}
+              score={100}
+              onComplete={() => handleModuleComplete({})}
+              onBack={handlePrevious}
+            />
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

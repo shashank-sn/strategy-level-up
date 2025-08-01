@@ -26,9 +26,10 @@ export interface ModuleData {
   };
   questions: Array<{
     id: string;
-    type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text';
+    type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text' | 'competitor-checklist';
     question: string;
     options?: string[];
+    competitors?: string[];
     min?: number;
     max?: number;
     placeholder?: string;
