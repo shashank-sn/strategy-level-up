@@ -21,17 +21,6 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-  },
-  {
-    name: "Brand Journey",
-    href: "/journey",
-    icon: Target,
-    badge: "10 Levels"
-  },
-  {
     name: "Analytics",
     href: "/analytics", 
     icon: BarChart3,
@@ -105,11 +94,6 @@ export function Sidebar() {
                   <Link to={item.href}>
                     <item.icon className="w-4 h-4" />
                     {item.name}
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-auto text-xs">
-                        {item.badge}
-                      </Badge>
-                    )}
                   </Link>
                 </Button>
               );

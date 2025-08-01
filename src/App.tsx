@@ -6,9 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProgressProvider } from "@/contexts/ProgressContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import BrandAudit from "./pages/BrandAudit";
-import BrandJourney from "./pages/BrandJourney";
+
 import BrandFoundationModule from "./pages/modules/BrandFoundationModule";
 import BusinessGoalsModule from "./pages/modules/BusinessGoalsModule";
 import FounderStoryModule from "./pages/modules/FounderStoryModule";
@@ -35,21 +34,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/brand-audit" element={<BrandAudit />} />
-          <Route path="/brand-journey" element={<BrandJourney />} />
-          {/* Legacy brand-journey routes */}
-          <Route path="/brand-journey/foundation" element={<BrandFoundationModule />} />
-          <Route path="/brand-journey/business-goals" element={<BusinessGoalsModule />} />
-          <Route path="/brand-journey/founder-story" element={<FounderStoryModule />} />
-          <Route path="/brand-journey/personality" element={<BrandPersonalityModule />} />
-          <Route path="/brand-journey/audience" element={<AudiencePersonaModule />} />
-          <Route path="/brand-journey/gap-analysis" element={<GapAnalysisModule />} />
-          <Route path="/brand-journey/positioning" element={<PositioningModule />} />
-          <Route path="/brand-journey/brand-concept" element={<BrandConceptModule />} />
-          <Route path="/brand-journey/strategic-pillars" element={<StrategicPillarsModule />} />
-          {/* Main module routes */}
-          <Route path="/modules/foundation" element={<BrandFoundationModule />} />
           <Route path="/modules/business-goals" element={<BusinessGoalsModule />} />
           <Route path="/modules/founder-story" element={<FounderStoryModule />} />
           <Route path="/modules/personality" element={<BrandPersonalityModule />} />
