@@ -34,6 +34,10 @@ export const BrandBlueprint = ({
   }]);
   const [newTodoText, setNewTodoText] = useState("");
 
+  // Checklist completion state
+  const [completedTasks, setCompletedTasks] = useState(new Set());
+  const [showConfetti, setShowConfetti] = useState(false);
+
   // Simulate blueprint generation
   useEffect(() => {
     const timer = setInterval(() => {
@@ -113,6 +117,22 @@ export const BrandBlueprint = ({
   const removeTodo = (id: number) => {
     setTodoItems(items => items.filter(item => item.id !== id));
   };
+
+  // Task completion handler
+  const toggleTaskCompletion = (taskId: string) => {
+    setCompletedTasks(prev => {
+      const newCompleted = new Set(prev);
+      if (newCompleted.has(taskId)) {
+        newCompleted.delete(taskId);
+      } else {
+        newCompleted.add(taskId);
+        // Show confetti animation
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 1000);
+      }
+      return newCompleted;
+    });
+  };
   if (isGenerating) {
     return <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-6 max-w-md">
@@ -157,7 +177,26 @@ export const BrandBlueprint = ({
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background relative">
+      {/* Confetti Animation */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className={`absolute w-2 h-2 rounded-full animate-bounce bg-gradient-to-r from-green-400 to-blue-400`}
+                style={{
+                  animationDelay: `${i * 100}ms`,
+                  animationDuration: '1s',
+                  left: `${(i - 3) * 20}px`,
+                  top: `${Math.sin(i) * 20}px`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -382,24 +421,56 @@ export const BrandBlueprint = ({
                     </div>
                     <div className="ml-11 space-y-3">
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('quick-win-1')} 
+                          onCheckedChange={() => toggleTaskCompletion('quick-win-1')} 
+                        />
                         <span className="text-sm flex-1">Update website messaging with new brand positioning</span>
-                        <Badge variant="secondary">Quick Win</Badge>
+                        <Badge 
+                          variant={completedTasks.has('quick-win-1') ? "default" : "secondary"}
+                          className={completedTasks.has('quick-win-1') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('quick-win-1') ? "Completed" : "Quick Win"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('quick-win-2')} 
+                          onCheckedChange={() => toggleTaskCompletion('quick-win-2')} 
+                        />
                         <span className="text-sm flex-1">Create email signature with consistent brand elements</span>
-                        <Badge variant="secondary">Quick Win</Badge>
+                        <Badge 
+                          variant={completedTasks.has('quick-win-2') ? "default" : "secondary"}
+                          className={completedTasks.has('quick-win-2') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('quick-win-2') ? "Completed" : "Quick Win"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('quick-win-3')} 
+                          onCheckedChange={() => toggleTaskCompletion('quick-win-3')} 
+                        />
                         <span className="text-sm flex-1">Update social media profiles with new brand voice</span>
-                        <Badge variant="secondary">Quick Win</Badge>
+                        <Badge 
+                          variant={completedTasks.has('quick-win-3') ? "default" : "secondary"}
+                          className={completedTasks.has('quick-win-3') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('quick-win-3') ? "Completed" : "Quick Win"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('quick-win-4')} 
+                          onCheckedChange={() => toggleTaskCompletion('quick-win-4')} 
+                        />
                         <span className="text-sm flex-1">Launch first content piece showcasing brand personality</span>
-                        <Badge variant="secondary">Quick Win</Badge>
+                        <Badge 
+                          variant={completedTasks.has('quick-win-4') ? "default" : "secondary"}
+                          className={completedTasks.has('quick-win-4') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('quick-win-4') ? "Completed" : "Quick Win"}
+                        </Badge>
                       </div>
                     </div>
                   </div>
@@ -414,29 +485,69 @@ export const BrandBlueprint = ({
                     </div>
                     <div className="ml-11 space-y-3">
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('momentum-1')} 
+                          onCheckedChange={() => toggleTaskCompletion('momentum-1')} 
+                        />
                         <span className="text-sm flex-1">Implement customer onboarding sequence with brand messaging</span>
-                        <Badge variant="secondary">Momentum Builder</Badge>
+                        <Badge 
+                          variant={completedTasks.has('momentum-1') ? "default" : "secondary"}
+                          className={completedTasks.has('momentum-1') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('momentum-1') ? "Completed" : "Momentum Builder"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('momentum-2')} 
+                          onCheckedChange={() => toggleTaskCompletion('momentum-2')} 
+                        />
                         <span className="text-sm flex-1">Launch content marketing series aligned with brand pillars</span>
-                        <Badge variant="secondary">Momentum Builder</Badge>
+                        <Badge 
+                          variant={completedTasks.has('momentum-2') ? "default" : "secondary"}
+                          className={completedTasks.has('momentum-2') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('momentum-2') ? "Completed" : "Momentum Builder"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('momentum-3')} 
+                          onCheckedChange={() => toggleTaskCompletion('momentum-3')} 
+                        />
                         <span className="text-sm flex-1">Train team on brand voice and messaging guidelines</span>
-                        <Badge variant="secondary">Momentum Builder</Badge>
+                        <Badge 
+                          variant={completedTasks.has('momentum-3') ? "default" : "secondary"}
+                          className={completedTasks.has('momentum-3') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('momentum-3') ? "Completed" : "Momentum Builder"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('momentum-4')} 
+                          onCheckedChange={() => toggleTaskCompletion('momentum-4')} 
+                        />
                         <span className="text-sm flex-1">Create brand-aligned sales materials and presentations</span>
-                        <Badge variant="secondary">Momentum Builder</Badge>
+                        <Badge 
+                          variant={completedTasks.has('momentum-4') ? "default" : "secondary"}
+                          className={completedTasks.has('momentum-4') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('momentum-4') ? "Completed" : "Momentum Builder"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('momentum-5')} 
+                          onCheckedChange={() => toggleTaskCompletion('momentum-5')} 
+                        />
                         <span className="text-sm flex-1">Establish customer feedback loop for brand validation</span>
-                        <Badge variant="secondary">Momentum Builder</Badge>
+                        <Badge 
+                          variant={completedTasks.has('momentum-5') ? "default" : "secondary"}
+                          className={completedTasks.has('momentum-5') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('momentum-5') ? "Completed" : "Momentum Builder"}
+                        </Badge>
                       </div>
                     </div>
                   </div>
@@ -453,9 +564,17 @@ export const BrandBlueprint = ({
                       {mockBrandData.pillars.map((pillar, index) => (
                         <div key={index} className="p-4 border rounded-lg">
                           <div className="flex items-center gap-3 mb-3">
-                            <Checkbox />
+                            <Checkbox 
+                              checked={completedTasks.has(`strategic-${index + 1}`)} 
+                              onCheckedChange={() => toggleTaskCompletion(`strategic-${index + 1}`)} 
+                            />
                             <h4 className="font-medium flex-1">{pillar.name}</h4>
-                            <Badge variant="secondary">Strategic Pillar</Badge>
+                            <Badge 
+                              variant={completedTasks.has(`strategic-${index + 1}`) ? "default" : "secondary"}
+                              className={completedTasks.has(`strategic-${index + 1}`) ? "bg-green-500" : ""}
+                            >
+                              {completedTasks.has(`strategic-${index + 1}`) ? "Completed" : "Strategic Pillar"}
+                            </Badge>
                           </div>
                           <div className="ml-8">
                             <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
@@ -464,14 +583,30 @@ export const BrandBlueprint = ({
                         </div>
                       ))}
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('strategic-audit')} 
+                          onCheckedChange={() => toggleTaskCompletion('strategic-audit')} 
+                        />
                         <span className="text-sm flex-1">Conduct brand audit and performance review</span>
-                        <Badge variant="secondary">Strategic Pillar</Badge>
+                        <Badge 
+                          variant={completedTasks.has('strategic-audit') ? "default" : "secondary"}
+                          className={completedTasks.has('strategic-audit') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('strategic-audit') ? "Completed" : "Strategic Pillar"}
+                        </Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox />
+                        <Checkbox 
+                          checked={completedTasks.has('strategic-planning')} 
+                          onCheckedChange={() => toggleTaskCompletion('strategic-planning')} 
+                        />
                         <span className="text-sm flex-1">Plan next quarter brand evolution strategy</span>
-                        <Badge variant="secondary">Strategic Pillar</Badge>
+                        <Badge 
+                          variant={completedTasks.has('strategic-planning') ? "default" : "secondary"}
+                          className={completedTasks.has('strategic-planning') ? "bg-green-500" : ""}
+                        >
+                          {completedTasks.has('strategic-planning') ? "Completed" : "Strategic Pillar"}
+                        </Badge>
                       </div>
                     </div>
                   </div>
