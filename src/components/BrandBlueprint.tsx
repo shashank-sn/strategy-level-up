@@ -488,6 +488,92 @@ export const BrandBlueprint = ({
 
           {/* Action Plan */}
           <TabsContent value="action-plan" className="space-y-6">
+            {/* Brand Health Score */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-primary" />
+                    Brand Health Score
+                  </span>
+                  <div className="flex items-center gap-4">
+                    {(() => {
+                      // Calculate total tasks
+                      const quickWinTasks = 4;
+                      const momentumTasks = 5;
+                      const strategicMainTasks = 5;
+                      const strategicSubTasks = 15;
+                      const totalTasks = quickWinTasks + momentumTasks + strategicMainTasks + strategicSubTasks;
+                      
+                      // Calculate completed tasks
+                      const completedMainTasks = Array.from(completedTasks).length;
+                      const completedSubTasksCount = Array.from(completedSubTasks).length;
+                      const totalCompleted = completedMainTasks + completedSubTasksCount;
+                      
+                      // Calculate percentage
+                      const percentage = Math.round((totalCompleted / totalTasks) * 100);
+                      
+                      // Determine color based on percentage
+                      let circleColor = 'text-red-500';
+                      let bgColor = 'bg-red-500';
+                      if (percentage >= 70) {
+                        circleColor = 'text-green-500';
+                        bgColor = 'bg-green-500';
+                      } else if (percentage >= 40) {
+                        circleColor = 'text-yellow-500';
+                        bgColor = 'bg-yellow-500';
+                      }
+                      
+                      return (
+                        <>
+                          <div className="text-right">
+                            <div className="text-sm text-muted-foreground">
+                              {totalCompleted} of {totalTasks} tasks completed
+                            </div>
+                          </div>
+                          <div className="relative w-16 h-16">
+                            <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r="28"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                fill="none"
+                                className="text-muted/20"
+                              />
+                              <circle
+                                cx="32"
+                                cy="32"
+                                r="28"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                fill="none"
+                                strokeDasharray={`${2 * Math.PI * 28}`}
+                                strokeDashoffset={`${2 * Math.PI * 28 * (1 - percentage / 100)}`}
+                                className={circleColor}
+                                style={{
+                                  transition: 'stroke-dashoffset 0.5s ease-in-out',
+                                }}
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className={`text-lg font-bold ${circleColor}`}>
+                                {percentage}
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                </CardTitle>
+                <p className="text-muted-foreground">
+                  Track your brand implementation progress across all strategic initiatives
+                </p>
+              </CardHeader>
+            </Card>
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
