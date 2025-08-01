@@ -32,6 +32,8 @@ interface ProgressContextType {
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 const initialModules: ModuleProgress[] = [
+  { id: 'brand-profile', name: 'Brand Profile Setup', completed: true, score: 85, maxScore: 100, locked: false, completedAt: new Date('2024-01-01') },
+  { id: 'brand-audit', name: 'Brand Audit', completed: true, score: 92, maxScore: 100, locked: false, completedAt: new Date('2024-01-02') },
   { id: 'foundation', name: 'Brand Foundation', completed: false, score: 0, maxScore: 100, locked: false },
   { id: 'business-goals', name: 'Business Goals', completed: false, score: 0, maxScore: 100, locked: true },
   { id: 'founder-story', name: 'Founder Story', completed: false, score: 0, maxScore: 100, locked: true },
@@ -44,11 +46,21 @@ const initialModules: ModuleProgress[] = [
   { id: 'strategic-pillars', name: 'Strategic Pillars', completed: false, score: 0, maxScore: 100, locked: true }
 ];
 
+const calculateInitialStats = () => {
+  const totalScore = initialModules.reduce((sum, module) => sum + module.score, 0);
+  const totalMaxScore = initialModules.reduce((sum, module) => sum + module.maxScore, 0);
+  const completedModules = initialModules.filter(module => module.completed).length;
+  
+  return {
+    overallScore: totalScore,
+    overallProgress: (completedModules / initialModules.length) * 100,
+    brandHealthScore: totalMaxScore > 0 ? (totalScore / totalMaxScore) * 100 : 0
+  };
+};
+
 const initialProgress: ProgressState = {
   modules: initialModules,
-  overallScore: 0,
-  overallProgress: 0,
-  brandHealthScore: 0,
+  ...calculateInitialStats(),
   currentActiveModule: 'foundation'
 };
 

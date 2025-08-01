@@ -15,11 +15,14 @@ export const ProgressDashboard = () => {
   const navigate = useNavigate();
 
   const moduleRoutes: Record<string, string> = {
+    'brand-profile': '/brand-audit', // Brand Profile Setup leads to audit page
+    'brand-audit': '/brand-audit', // Brand Audit stays on audit page
     'foundation': '/modules/foundation',
     'business-goals': '/modules/business-goals',
     'founder-story': '/modules/founder-story',
     'personality': '/modules/personality',
     'audience': '/modules/audience',
+    'competitive-analysis': '/modules/competitive-analysis',
     'gap-analysis': '/modules/gap-analysis',
     'positioning': '/modules/positioning',
     'brand-concept': '/modules/brand-concept',
@@ -76,7 +79,7 @@ export const ProgressDashboard = () => {
                   </p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">out of 1000 points</p>
+              <p className="text-xs text-muted-foreground mt-2">out of 1200 points</p>
             </CardContent>
           </Card>
         </div>
