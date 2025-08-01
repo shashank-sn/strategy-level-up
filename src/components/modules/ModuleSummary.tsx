@@ -12,128 +12,205 @@ interface ModuleSummaryProps {
 }
 
 export const ModuleSummary = ({ moduleTitle, answers, score, onComplete, onBack }: ModuleSummaryProps) => {
-  const renderAnswerSummary = () => {
-    if (!answers || Object.keys(answers).length === 0) {
-      return <p className="text-muted-foreground">No answers recorded</p>;
-    }
+  // Extract competitor data
+  const competitors = [
+    answers["competitor-1"],
+    answers["competitor-2"], 
+    answers["competitor-3"]
+  ].filter(Boolean);
 
-    return (
-      <div className="space-y-4">
-        {Object.entries(answers).map(([key, value]) => {
-          let displayValue = "";
-          let label = "";
+  const marketTrends = answers["market-trends"] || [];
+  const strategicInsights = answers["strategic-insights"] || "";
+  const competitorChecklist = answers["competitor-checklist"] || {};
 
-          // Format the key for display
-          if (key.startsWith("competitor-")) {
-            const compNum = key.split("-")[1];
-            label = `Competitor ${compNum}`;
-            if (typeof value === 'object' && value !== null && 'name' in value) {
-              const comp = value as { name: string; description: string };
-              displayValue = `${comp.name}: ${comp.description}`;
-            } else {
-              displayValue = String(value);
-            }
-          } else if (key === "market-trends") {
-            label = "Market Trends";
-            displayValue = Array.isArray(value) ? value.join(", ") : String(value);
-          } else if (key === "strategic-insights") {
-            label = "Strategic Insights";
-            displayValue = String(value);
-          } else if (key === "competitor-checklist") {
-            label = "Competitor Analysis";
-            if (typeof value === 'object' && value !== null) {
-              const checklist = value as Record<string, Record<string, string>>;
-              displayValue = Object.entries(checklist)
-                .map(([competitor, attrs]) => 
-                  `${competitor}: ${Object.entries(attrs)
-                    .map(([attr, rating]) => `${attr} (${rating})`)
-                    .join(", ")}`
-                ).join("; ");
-            } else {
-              displayValue = String(value);
-            }
-          } else {
-            label = key.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-            displayValue = String(value);
-          }
+  // Analyze competitor strengths
+  const analyzeCompetitorStrengths = () => {
+    const analysis = competitors.map(competitor => {
+      if (!competitor?.name) return null;
+      
+      const competitorData = competitorChecklist[competitor.name] || {};
+      const strengths = Object.entries(competitorData)
+        .filter(([_, rating]) => rating === 'strength')
+        .map(([attribute, _]) => attribute);
+      
+      const weaknesses = Object.entries(competitorData)
+        .filter(([_, rating]) => rating === 'weakness')
+        .map(([attribute, _]) => attribute);
 
-          return (
-            <div key={key} className="border-l-4 border-primary pl-4">
-              <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
-                {label}
-              </h4>
-              <p className="mt-1 text-sm leading-relaxed">
-                {displayValue.length > 200 ? `${displayValue.substring(0, 200)}...` : displayValue}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    );
+      return {
+        name: competitor.name,
+        description: competitor.description,
+        strengths,
+        weaknesses,
+        primaryPlay: strengths.length > 0 ? strengths[0] : 'Not identified'
+      };
+    }).filter(Boolean);
+
+    return analysis;
   };
 
-  // Calculate completion percentage
-  const totalAnswers = Object.keys(answers).length;
-  const answeredQuestions = Object.keys(answers).filter(key => 
-    answers[key] !== undefined && answers[key] !== '' && answers[key] !== null
-  ).length;
-  const completionRate = totalAnswers > 0 ? Math.round((answeredQuestions / totalAnswers) * 100) : 0;
+  // Identify market opportunities
+  const identifyOpportunities = () => {
+    const allWeaknesses = competitors.flatMap(competitor => {
+      if (!competitor?.name) return [];
+      const competitorData = competitorChecklist[competitor.name] || {};
+      return Object.entries(competitorData)
+        .filter(([_, rating]) => rating === 'weakness')
+        .map(([attribute, _]) => attribute);
+    });
 
-  const keyTakeaways = [
-    "You've identified your main competitors and their key attributes",
-    "Market trends analysis helps position your brand strategically", 
-    "Competitive strengths and weaknesses reveal opportunities for differentiation",
-    "These insights will guide your brand positioning and messaging strategy"
-  ];
+    // Count weakness frequency to find common gaps
+    const weaknessCount = allWeaknesses.reduce((acc, weakness) => {
+      acc[weakness] = (acc[weakness] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Return attributes where multiple competitors are weak
+    return Object.entries(weaknessCount)
+      .filter(([_, count]) => count >= 2)
+      .map(([attribute, _]) => attribute);
+  };
+
+  const competitorAnalysis = analyzeCompetitorStrengths();
+  const marketOpportunities = identifyOpportunities();
 
   return (
     <div className="space-y-6">
-      {/* Completion Card */}
+      {/* Header */}
       <Card className="border-primary/20">
         <CardHeader className="text-center">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Strategy Complete!</CardTitle>
-          <p className="text-center text-muted-foreground mb-4">
-            You've successfully completed your {moduleTitle.toLowerCase()} analysis
+          <CardTitle className="text-2xl">Competitive Analysis Complete!</CardTitle>
+          <p className="text-muted-foreground">
+            Here's your competitive landscape analysis and strategic opportunities
           </p>
-          <Badge variant="default" className="text-lg px-4 py-2">
-            {completionRate}% Complete
-          </Badge>
         </CardHeader>
       </Card>
 
-      {/* Your Strategy Summary */}
+      {/* Competitor Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-primary" />
-            Your Competitive Analysis
+            Competitor Biggest Plays
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {renderAnswerSummary()}
+          <div className="space-y-6">
+            {competitorAnalysis.map((competitor, index) => (
+              <div key={index} className="border-l-4 border-primary pl-4">
+                <h4 className="font-semibold text-lg">{competitor.name}</h4>
+                <p className="text-sm text-muted-foreground mb-3">{competitor.description}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h5 className="font-medium text-sm text-green-700 mb-2">Primary Strengths</h5>
+                    {competitor.strengths.length > 0 ? (
+                      <ul className="space-y-1">
+                        {competitor.strengths.map((strength, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 bg-green-500 rounded-full" />
+                            {strength}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No clear strengths identified</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h5 className="font-medium text-sm text-red-700 mb-2">Key Weaknesses</h5>
+                    {competitor.weaknesses.length > 0 ? (
+                      <ul className="space-y-1">
+                        {competitor.weaknesses.map((weakness, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-sm">
+                            <div className="w-2 h-2 bg-red-500 rounded-full" />
+                            {weakness}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No clear weaknesses identified</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm">
+                    <strong>Biggest Play:</strong> {competitor.primaryPlay === 'Not identified' ? 
+                      'Focus area not clearly defined in analysis' : 
+                      `Competing primarily on ${competitor.primaryPlay.toLowerCase()}`
+                    }
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Key Takeaways */}
+      {/* Market Trends Impact */}
+      {marketTrends.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-primary" />
+              Key Market Trends
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {marketTrends.map((trend: string, index: number) => (
+                <div key={index} className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg">
+                  <p className="font-medium text-sm">{trend}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              These trends are reshaping your industry and creating new opportunities for differentiation.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Strategic Opportunities */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-primary" />
-            Key Takeaways
+            <CheckCircle className="w-5 h-5 text-primary" />
+            Strategic Opportunities
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-3">
-            {keyTakeaways.map((takeaway, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-sm">{takeaway}</span>
-              </li>
-            ))}
-          </ul>
+          {marketOpportunities.length > 0 ? (
+            <div>
+              <h4 className="font-medium mb-3">Market Gaps to Exploit:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {marketOpportunities.map((opportunity, index) => (
+                  <div key={index} className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="font-medium text-green-800">{opportunity}</p>
+                    <p className="text-sm text-green-600">
+                      Multiple competitors show weakness here - opportunity for differentiation
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              Complete the competitor analysis to identify strategic opportunities.
+            </p>
+          )}
+          
+          {strategicInsights && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium mb-2">Your Strategic Insights:</h4>
+              <p className="text-sm leading-relaxed">{strategicInsights}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
