@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProgressProvider } from "@/contexts/ProgressContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 import BrandAudit from "./pages/BrandAudit";
 
 import BrandFoundationModule from "./pages/modules/BrandFoundationModule";
@@ -35,6 +36,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/brand-audit" element={<BrandAudit />} />
           <Route path="/modules/foundation" element={<BrandFoundationModule />} />
           <Route path="/modules/business-goals" element={<BusinessGoalsModule />} />
