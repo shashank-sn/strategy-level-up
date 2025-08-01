@@ -17,6 +17,7 @@ import GapAnalysisModule from "./pages/modules/GapAnalysisModule";
 import PositioningModule from "./pages/modules/PositioningModule";
 import BrandConceptModule from "./pages/modules/BrandConceptModule";
 import StrategicPillarsModule from "./pages/modules/StrategicPillarsModule";
+import CompetitiveAnalysisModule from "./pages/modules/CompetitiveAnalysisModule";
 import BrandBlueprintPage from "./pages/BrandBlueprintPage";
 import ProgressDashboardPage from "./pages/ProgressDashboardPage";
 import Pricing from "./pages/Pricing";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/brand-audit" element={<BrandAudit />} />
+          <Route path="/modules/foundation" element={<BrandFoundationModule />} />
           <Route path="/modules/business-goals" element={<BusinessGoalsModule />} />
           <Route path="/modules/founder-story" element={<FounderStoryModule />} />
           <Route path="/modules/personality" element={<BrandPersonalityModule />} />
@@ -42,6 +44,7 @@ const App = () => (
           <Route path="/modules/gap-analysis" element={<GapAnalysisModule />} />
           <Route path="/modules/positioning" element={<PositioningModule />} />
           <Route path="/modules/brand-concept" element={<BrandConceptModule />} />
+          <Route path="/modules/competitive-analysis" element={<CompetitiveAnalysisModule />} />
           <Route path="/modules/strategic-pillars" element={<StrategicPillarsModule />} />
           <Route path="/brand-blueprint" element={<BrandBlueprintPage />} />
           <Route path="/progress" element={<ProgressDashboardPage />} />
