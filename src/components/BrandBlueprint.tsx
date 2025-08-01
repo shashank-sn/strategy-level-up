@@ -7,44 +7,37 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Download, 
-  Share2, 
-  FileText, 
-  Target, 
-  Users, 
-  MessageSquare, 
-  Zap, 
-  CheckCircle,
-  Calendar,
-  Palette,
-  Globe,
-  Upload,
-  Plus,
-  X
-} from "lucide-react";
-
+import { Download, Share2, FileText, Target, Users, MessageSquare, Zap, CheckCircle, Calendar, Palette, Globe, Upload, Plus, X } from "lucide-react";
 interface BrandBlueprintProps {
   brandData?: any; // In real implementation, this would be typed based on all module data
 }
-
-export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
+export const BrandBlueprint = ({
+  brandData
+}: BrandBlueprintProps) => {
   const [isGenerating, setIsGenerating] = useState(true);
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("summary");
-  
+
   // Todo list state
-  const [todoItems, setTodoItems] = useState([
-    { id: 1, text: "Update website messaging", completed: false },
-    { id: 2, text: "Launch content marketing series", completed: false },
-    { id: 3, text: "Implement customer onboarding sequence", completed: false }
-  ]);
+  const [todoItems, setTodoItems] = useState([{
+    id: 1,
+    text: "Update website messaging",
+    completed: false
+  }, {
+    id: 2,
+    text: "Launch content marketing series",
+    completed: false
+  }, {
+    id: 3,
+    text: "Implement customer onboarding sequence",
+    completed: false
+  }]);
   const [newTodoText, setNewTodoText] = useState("");
 
   // Simulate blueprint generation
   useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prev) => {
+      setProgress(prev => {
         if (prev >= 100) {
           setIsGenerating(false);
           clearInterval(timer);
@@ -53,7 +46,6 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
         return prev + 10;
       });
     }, 300);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -73,42 +65,27 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
       pricing: 9
     },
     promise: "Technology that works as hard as you do",
-    reasonsToBelieve: [
-      "99.9% uptime guarantee",
-      "24/7 customer support",
-      "Scalable pricing model",
-      "Integration with 100+ business tools"
-    ],
-    pillars: [
-      {
-        name: "Customer Success",
-        purpose: "Ensure every customer achieves their business goals",
-        action: "Launch customer success program with quarterly check-ins"
-      },
-      {
-        name: "Product Innovation",
-        purpose: "Stay ahead with cutting-edge features",
-        action: "Implement monthly feature releases based on user feedback"
-      },
-      {
-        name: "Market Expansion",
-        purpose: "Reach new business segments",
-        action: "Develop partnerships with 3 industry associations"
-      }
-    ],
-    quickWins: [
-      "Update website messaging",
-      "Launch content marketing series",
-      "Implement customer onboarding sequence"
-    ],
+    reasonsToBelieve: ["99.9% uptime guarantee", "24/7 customer support", "Scalable pricing model", "Integration with 100+ business tools"],
+    pillars: [{
+      name: "Customer Success",
+      purpose: "Ensure every customer achieves their business goals",
+      action: "Launch customer success program with quarterly check-ins"
+    }, {
+      name: "Product Innovation",
+      purpose: "Stay ahead with cutting-edge features",
+      action: "Implement monthly feature releases based on user feedback"
+    }, {
+      name: "Market Expansion",
+      purpose: "Reach new business segments",
+      action: "Develop partnerships with 3 industry associations"
+    }],
+    quickWins: ["Update website messaging", "Launch content marketing series", "Implement customer onboarding sequence"],
     voiceTone: ["Professional", "Empathetic", "Direct"]
   };
-
   const downloadDocument = (type: 'summary' | 'guidelines' | 'both') => {
     console.log(`Downloading ${type} document(s)`);
     // In real implementation, this would generate and download the actual documents
   };
-
   const shareStrategy = () => {
     const shareUrl = `${mockBrandData.companyName.toLowerCase().replace(/\s+/g, '')}.yourbrandstrategist.com`;
     navigator.clipboard.writeText(shareUrl);
@@ -117,13 +94,11 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
 
   // Todo list functions
   const toggleTodo = (id: number) => {
-    setTodoItems(items => 
-      items.map(item => 
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
+    setTodoItems(items => items.map(item => item.id === id ? {
+      ...item,
+      completed: !item.completed
+    } : item));
   };
-
   const addTodo = () => {
     if (newTodoText.trim()) {
       const newTodo = {
@@ -135,14 +110,11 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
       setNewTodoText("");
     }
   };
-
   const removeTodo = (id: number) => {
     setTodoItems(items => items.filter(item => item.id !== id));
   };
-
   if (isGenerating) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+    return <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-6 max-w-md">
           <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
             <Target className="w-10 h-10 text-primary animate-pulse" />
@@ -183,12 +155,9 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
             </div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -277,17 +246,13 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                       Personality Traits
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {mockBrandData.personality.map((trait, index) => (
-                        <Badge key={index} variant="secondary">{trait}</Badge>
-                      ))}
+                      {mockBrandData.personality.map((trait, index) => <Badge key={index} variant="secondary">{trait}</Badge>)}
                     </div>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Voice & Tone</h3>
                     <div className="flex flex-wrap gap-2">
-                      {mockBrandData.voiceTone.map((tone, index) => (
-                        <Badge key={index} variant="outline">{tone}</Badge>
-                      ))}
+                      {mockBrandData.voiceTone.map((tone, index) => <Badge key={index} variant="outline">{tone}</Badge>)}
                     </div>
                   </div>
                 </div>
@@ -306,12 +271,10 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                   <div>
                     <h3 className="font-semibold mb-2">Reasons to Believe</h3>
                     <ul className="text-sm space-y-1">
-                      {mockBrandData.reasonsToBelieve.map((reason, index) => (
-                        <li key={index} className="flex items-center gap-2">
+                      {mockBrandData.reasonsToBelieve.map((reason, index) => <li key={index} className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 bg-primary rounded-full" />
                           {reason}
-                        </li>
-                      ))}
+                        </li>)}
                     </ul>
                   </div>
                 </div>
@@ -322,12 +285,10 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                 <div>
                   <h3 className="font-semibold mb-4">Strategic Pillars</h3>
                   <div className="grid gap-4 md:grid-cols-3">
-                    {mockBrandData.pillars.map((pillar, index) => (
-                      <div key={index} className="p-3 border rounded-lg">
+                    {mockBrandData.pillars.map((pillar, index) => <div key={index} className="p-3 border rounded-lg">
                         <h4 className="font-medium text-sm mb-1">{pillar.name}</h4>
                         <p className="text-xs text-muted-foreground">{pillar.purpose}</p>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
               </CardContent>
@@ -381,22 +342,19 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {Object.entries(mockBrandData.differentiators).map(([key, value]) => (
-                      <div key={key} className="flex justify-between items-center">
+                    {Object.entries(mockBrandData.differentiators).map(([key, value]) => <div key={key} className="flex justify-between items-center">
                         <span className="text-sm font-medium capitalize">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </span>
                         <div className="flex items-center gap-2">
                           <div className="w-20 bg-muted rounded-full h-2">
-                            <div 
-                              className="bg-primary h-2 rounded-full" 
-                              style={{ width: `${(value as number) * 10}%` }}
-                            />
+                            <div className="bg-primary h-2 rounded-full" style={{
+                          width: `${(value as number) * 10}%`
+                        }} />
                           </div>
                           <span className="text-sm font-medium text-primary">{value}/10</span>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </CardContent>
               </Card>
@@ -419,28 +377,13 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                     <h3 className="font-semibold mb-4">Immediate Actions (Next 2 weeks)</h3>
                     <div className="space-y-3">
                       {/* Add new todo */}
-                      <div className="flex items-center gap-2 p-3 border border-dashed rounded-lg">
-                        <Input
-                          placeholder="Add new action item..."
-                          value={newTodoText}
-                          onChange={(e) => setNewTodoText(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && addTodo()}
-                          className="flex-1"
-                        />
-                        <Button size="sm" onClick={addTodo}>
-                          <Plus className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      
                       
                       {/* Todo items */}
                       <div className="space-y-2">
-                        {todoItems.map((item) => (
-                          <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg group">
+                        {todoItems.map(item => <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg group">
                             <div className="flex items-center gap-3 flex-1">
-                              <Checkbox
-                                checked={item.completed}
-                                onCheckedChange={() => toggleTodo(item.id)}
-                              />
+                              <Checkbox checked={item.completed} onCheckedChange={() => toggleTodo(item.id)} />
                               <span className={`text-sm flex-1 ${item.completed ? 'line-through text-muted-foreground' : ''}`}>
                                 {item.text}
                               </span>
@@ -449,17 +392,11 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                               <Badge variant={item.completed ? "default" : "secondary"}>
                                 {item.completed ? "Complete" : "Quick Win"}
                               </Badge>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => removeTodo(item.id)}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity"
-                              >
+                              <Button size="sm" variant="ghost" onClick={() => removeTodo(item.id)} className="opacity-0 group-hover:opacity-100 transition-opacity">
                                 <X className="w-4 h-4" />
                               </Button>
                             </div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </div>
@@ -468,16 +405,14 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
                   <div>
                     <h3 className="font-semibold mb-4">Strategic Pillar Actions (30-90 days)</h3>
                     <div className="space-y-3">
-                      {mockBrandData.pillars.map((pillar, index) => (
-                        <div key={index} className="p-4 border rounded-lg">
+                      {mockBrandData.pillars.map((pillar, index) => <div key={index} className="p-4 border rounded-lg">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium">{pillar.name}</h4>
                             <Badge variant="outline">Strategic</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
                           <p className="text-sm"><strong>Action:</strong> {pillar.action}</p>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </div>
                 </div>
@@ -778,6 +713,5 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
-  );
+    </div>;
 };
