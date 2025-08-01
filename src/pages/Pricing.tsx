@@ -100,9 +100,7 @@ const Pricing = () => {
                     <Mail className="h-4 w-4" />
                     Contact for Agency Pricing
                   </Button>
-                  <Button variant="ghost">
-                    Learn More About Bulk Options
-                  </Button>
+                  
                 </div>
 
                 <p className="text-sm text-muted-foreground">
