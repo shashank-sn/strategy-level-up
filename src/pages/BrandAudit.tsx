@@ -72,6 +72,7 @@ const BrandAudit = () => {
             onNext={handleNext}
             onPrevious={handlePrevious}
             userName={userDetails.name}
+            userDetails={userDetails}
           />
         );
       case 3:

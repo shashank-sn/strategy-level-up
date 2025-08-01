@@ -1,20 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import type { UserDetails } from "@/pages/BrandAudit";
 
 interface AuditSignInProps {
   onNext: () => void;
   onPrevious: () => void;
   userName: string;
+  userDetails: UserDetails;
 }
 
-const AuditSignIn = ({ onNext, onPrevious, userName }: AuditSignInProps) => {
-  const { signInWithGoogle } = useAuth();
+const AuditSignIn = ({ onNext, onPrevious, userName, userDetails }: AuditSignInProps) => {
+  const { user, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+
+  // Check if user is already logged in and save details
+  useEffect(() => {
+    if (user) {
+      saveUserDetailsToDatabase();
+    }
+  }, [user]);
+
+  const saveUserDetailsToDatabase = async () => {
+    if (!user) return;
+
+    try {
+      // Update or insert user profile with company details
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: user.id,
+          first_name: userDetails.name.split(' ')[0] || userDetails.name,
+          last_name: userDetails.name.split(' ').slice(1).join(' ') || '',
+          company_name: userDetails.company,
+          role: userDetails.role,
+          email: user.email
+        });
+
+      if (error) {
+        console.error('Error saving user details:', error);
+        toast({
+          title: "Warning",
+          description: "Details saved but there was an issue updating your profile.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Your details have been saved successfully!",
+        });
+      }
+      
+      // Proceed to next step
+      onNext();
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save your details. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -25,10 +77,9 @@ const AuditSignIn = ({ onNext, onPrevious, userName }: AuditSignInProps) => {
         description: error.message,
         variant: "destructive"
       });
-    } else {
-      onNext();
+      setLoading(false);
     }
-    setLoading(false);
+    // Note: setLoading(false) will be handled by useEffect when user state changes
   };
 
   return (
