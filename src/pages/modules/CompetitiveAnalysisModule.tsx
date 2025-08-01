@@ -25,17 +25,17 @@ interface ModuleData {
       keyPoints: string[];
     }>;
   };
-  questions: Array<{
-    id: string;
-    type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text' | 'competitor-checklist';
-    question: string;
-    options?: string[];
-    competitors?: string[];
-    min?: number;
-    max?: number;
-    placeholder?: string;
-    required: boolean;
-  }>;
+    questions: Array<{
+      id: string;
+      type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text' | 'competitor-checklist' | 'competitor';
+      question: string;
+      options?: string[];
+      competitors?: string[];
+      min?: number;
+      max?: number;
+      placeholder?: string;
+      required: boolean;
+    }>;
 }
 
 const CompetitiveAnalysisModule = () => {
@@ -108,45 +108,21 @@ const CompetitiveAnalysisModule = () => {
     },
     questions: [
       {
-        id: "competitor-1-name",
-        type: "fill-blank",
-        question: "Competitor 1 Name: Who is your first main direct competitor?",
-        placeholder: "Enter competitor name",
+        id: "competitor-1",
+        type: "competitor",
+        question: "Competitor 1: Who is your first main direct competitor and what are they known for?",
         required: true
       },
       {
-        id: "competitor-1-description",
-        type: "text",
-        question: "For your first competitor, describe 2-3 unique identifiers, key attributes, and perceived personality traits. What are they known for?",
-        placeholder: "Example: Performance-focused, aspirational, athletic apparel, often uses celebrity endorsements",
+        id: "competitor-2",
+        type: "competitor",
+        question: "Competitor 2: Who is your second main direct competitor and what are they known for?",
         required: true
       },
       {
-        id: "competitor-2-name",
-        type: "fill-blank",
-        question: "Competitor 2 Name: Who is your second main direct competitor?",
-        placeholder: "Enter competitor name",
-        required: true
-      },
-      {
-        id: "competitor-2-description",
-        type: "text",
-        question: "For your second competitor, describe their key attributes and what they're known for.",
-        placeholder: "Describe their unique identifiers and personality traits",
-        required: true
-      },
-      {
-        id: "competitor-3-name",
-        type: "fill-blank",
-        question: "Competitor 3 Name: Who is your third main direct competitor?",
-        placeholder: "Enter competitor name",
-        required: true
-      },
-      {
-        id: "competitor-3-description",
-        type: "text",
-        question: "For your third competitor, describe their key attributes and what they're known for.",
-        placeholder: "Describe their unique identifiers and personality traits",
+        id: "competitor-3",
+        type: "competitor",
+        question: "Competitor 3: Who is your third main direct competitor and what are they known for?",
         required: true
       },
       {

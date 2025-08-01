@@ -7,12 +7,13 @@ import { SliderQuestion } from "./questions/SliderQuestion";
 import { FillBlankQuestion } from "./questions/FillBlankQuestion";
 import { TextQuestion } from "./questions/TextQuestion";
 import { CompetitorChecklistQuestion } from "./questions/CompetitorChecklistQuestion";
+import { CompetitorQuestion } from "./questions/CompetitorQuestion";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Question {
   id: string;
-  type: "binary" | "mcq" | "slider" | "fill-blank" | "text" | "competitor-checklist";
+  type: "binary" | "mcq" | "slider" | "fill-blank" | "text" | "competitor-checklist" | "competitor";
   question: string;
   options?: string[];
   competitors?: string[];
@@ -54,9 +55,9 @@ export const CompetitiveAnalysisStrategy = ({
     return questions.map(question => {
       if (question.type === "competitor-checklist") {
         const competitors = [
-          answers["competitor-1-name"],
-          answers["competitor-2-name"], 
-          answers["competitor-3-name"]
+          answers["competitor-1"]?.name,
+          answers["competitor-2"]?.name, 
+          answers["competitor-3"]?.name
         ].filter(Boolean);
         
         return {
@@ -104,6 +105,9 @@ export const CompetitiveAnalysisStrategy = ({
       if (competitors.length === 0) return false;
       return answer && Object.keys(answer).length > 0;
     }
+    if (question.type === "competitor") {
+      return answer && answer.name && answer.name.trim() !== "" && answer.description && answer.description.trim() !== "";
+    }
     return answer && answer.toString().trim() !== "";
   };
 
@@ -146,6 +150,14 @@ export const CompetitiveAnalysisStrategy = ({
       case "text":
         return (
           <TextQuestion
+            question={question}
+            value={answer}
+            onChange={(value) => handleAnswerChange(question.id, value)}
+          />
+        );
+      case "competitor":
+        return (
+          <CompetitorQuestion
             question={question}
             value={answer}
             onChange={(value) => handleAnswerChange(question.id, value)}
