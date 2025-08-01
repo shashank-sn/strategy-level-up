@@ -36,7 +36,6 @@ export const BrandBlueprint = ({
 
   // Checklist completion state
   const [completedTasks, setCompletedTasks] = useState(new Set());
-  const [showConfetti, setShowConfetti] = useState(false);
 
   // Simulate blueprint generation
   useEffect(() => {
@@ -126,9 +125,6 @@ export const BrandBlueprint = ({
         newCompleted.delete(taskId);
       } else {
         newCompleted.add(taskId);
-        // Show confetti animation
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 1000);
       }
       return newCompleted;
     });
@@ -177,26 +173,7 @@ export const BrandBlueprint = ({
         </div>
       </div>;
   }
-  return <div className="min-h-screen bg-background relative">
-      {/* Confetti Animation */}
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-50">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className={`absolute w-2 h-2 rounded-full animate-bounce bg-gradient-to-r from-green-400 to-blue-400`}
-                style={{
-                  animationDelay: `${i * 100}ms`,
-                  animationDuration: '1s',
-                  left: `${(i - 3) * 20}px`,
-                  top: `${Math.sin(i) * 20}px`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+  return <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
