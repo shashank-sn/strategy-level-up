@@ -67,7 +67,20 @@ const initialProgress: ProgressState = {
 export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [progress, setProgress] = useState<ProgressState>(() => {
     const saved = localStorage.getItem('brandJourneyProgress');
-    return saved ? JSON.parse(saved) : initialProgress;
+    if (saved) {
+      const savedData = JSON.parse(saved);
+      // Check if saved data has the new modules, if not, reset to initial state
+      const hasNewModules = savedData.modules?.some((m: ModuleProgress) => 
+        m.id === 'brand-profile' || m.id === 'brand-audit'
+      );
+      
+      if (!hasNewModules) {
+        // Reset to new initial state if old data doesn't have new modules
+        return initialProgress;
+      }
+      return savedData;
+    }
+    return initialProgress;
   });
 
   useEffect(() => {
