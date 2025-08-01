@@ -157,11 +157,34 @@ export const BrandBlueprint = ({
       }
       
       // Check if all 3 sub-tasks for this pillar are completed
-      const subTasksForPillar = [
-        `strategic-${pillarIndex + 1}-sub-1`,
-        `strategic-${pillarIndex + 1}-sub-2`, 
-        `strategic-${pillarIndex + 1}-sub-3`
-      ];
+      let subTasksForPillar;
+      let mainTaskId;
+      
+      if (pillarIndex <= 2) {
+        // For the brand pillars (0, 1, 2)
+        subTasksForPillar = [
+          `strategic-${pillarIndex + 1}-sub-1`,
+          `strategic-${pillarIndex + 1}-sub-2`, 
+          `strategic-${pillarIndex + 1}-sub-3`
+        ];
+        mainTaskId = `strategic-${pillarIndex + 1}`;
+      } else if (pillarIndex === 3) {
+        // For brand audit task
+        subTasksForPillar = [
+          'strategic-audit-sub-1',
+          'strategic-audit-sub-2',
+          'strategic-audit-sub-3'
+        ];
+        mainTaskId = 'strategic-audit';
+      } else if (pillarIndex === 4) {
+        // For strategic planning task
+        subTasksForPillar = [
+          'strategic-planning-sub-1',
+          'strategic-planning-sub-2',
+          'strategic-planning-sub-3'
+        ];
+        mainTaskId = 'strategic-planning';
+      }
       
       const allSubTasksCompleted = subTasksForPillar.every(id => 
         id === subTaskId ? newCompleted.has(id) : completedSubTasks.has(id)
@@ -171,14 +194,14 @@ export const BrandBlueprint = ({
       if (allSubTasksCompleted) {
         setCompletedTasks(prevMain => {
           const newMainCompleted = new Set(prevMain);
-          newMainCompleted.add(`strategic-${pillarIndex + 1}`);
+          newMainCompleted.add(mainTaskId);
           return newMainCompleted;
         });
       } else {
         // Remove main task completion if not all sub-tasks are done
         setCompletedTasks(prevMain => {
           const newMainCompleted = new Set(prevMain);
-          newMainCompleted.delete(`strategic-${pillarIndex + 1}`);
+          newMainCompleted.delete(mainTaskId);
           return newMainCompleted;
         });
       }
@@ -611,8 +634,7 @@ export const BrandBlueprint = ({
                             </Badge>
                           </div>
                           <div className="ml-8 mb-4">
-                            <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
-                            <p className="text-sm"><strong>Action:</strong> {pillar.action}</p>
+                            <p className="text-sm text-muted-foreground">{pillar.purpose}</p>
                           </div>
                           
                           {/* Sub-tasks */}
@@ -630,31 +652,93 @@ export const BrandBlueprint = ({
                           </div>
                         </div>
                       ))}
-                      <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox 
-                          checked={completedTasks.has('strategic-audit')} 
-                          onCheckedChange={() => toggleTaskCompletion('strategic-audit')} 
-                        />
-                        <span className="text-sm flex-1">Conduct brand audit and performance review</span>
-                        <Badge 
-                          variant={completedTasks.has('strategic-audit') ? "default" : "secondary"}
-                          className={completedTasks.has('strategic-audit') ? "bg-green-500" : ""}
-                        >
-                          {completedTasks.has('strategic-audit') ? "Completed" : "Strategic Pillar"}
-                        </Badge>
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Checkbox 
+                            checked={completedTasks.has('strategic-audit')} 
+                            disabled={true}
+                          />
+                          <h4 className="font-medium flex-1">Brand Audit & Performance Review</h4>
+                          <Badge 
+                            variant={completedTasks.has('strategic-audit') ? "default" : "secondary"}
+                            className={completedTasks.has('strategic-audit') ? "bg-green-500" : ""}
+                          >
+                            {completedTasks.has('strategic-audit') ? "Completed" : "Strategic Pillar"}
+                          </Badge>
+                        </div>
+                        <div className="ml-8 mb-4">
+                          <p className="text-sm text-muted-foreground">Evaluate brand performance and identify areas for optimization.</p>
+                        </div>
+                        
+                        {/* Sub-tasks */}
+                        <div className="ml-8 space-y-2">
+                          <h5 className="text-sm font-medium text-muted-foreground mb-2">Sub-tasks:</h5>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-audit-sub-1')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-audit-sub-1', 3)} 
+                            />
+                            <span className="text-xs flex-1">Analyze brand sentiment and customer feedback</span>
+                          </div>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-audit-sub-2')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-audit-sub-2', 3)} 
+                            />
+                            <span className="text-xs flex-1">Review marketing performance metrics and ROI</span>
+                          </div>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-audit-sub-3')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-audit-sub-3', 3)} 
+                            />
+                            <span className="text-xs flex-1">Document lessons learned and optimization opportunities</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Checkbox 
-                          checked={completedTasks.has('strategic-planning')} 
-                          onCheckedChange={() => toggleTaskCompletion('strategic-planning')} 
-                        />
-                        <span className="text-sm flex-1">Plan next quarter brand evolution strategy</span>
-                        <Badge 
-                          variant={completedTasks.has('strategic-planning') ? "default" : "secondary"}
-                          className={completedTasks.has('strategic-planning') ? "bg-green-500" : ""}
-                        >
-                          {completedTasks.has('strategic-planning') ? "Completed" : "Strategic Pillar"}
-                        </Badge>
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Checkbox 
+                            checked={completedTasks.has('strategic-planning')} 
+                            disabled={true}
+                          />
+                          <h4 className="font-medium flex-1">Next Quarter Evolution Strategy</h4>
+                          <Badge 
+                            variant={completedTasks.has('strategic-planning') ? "default" : "secondary"}
+                            className={completedTasks.has('strategic-planning') ? "bg-green-500" : ""}
+                          >
+                            {completedTasks.has('strategic-planning') ? "Completed" : "Strategic Pillar"}
+                          </Badge>
+                        </div>
+                        <div className="ml-8 mb-4">
+                          <p className="text-sm text-muted-foreground">Plan strategic brand evolution for continued growth and market positioning.</p>
+                        </div>
+                        
+                        {/* Sub-tasks */}
+                        <div className="ml-8 space-y-2">
+                          <h5 className="text-sm font-medium text-muted-foreground mb-2">Sub-tasks:</h5>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-planning-sub-1')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-planning-sub-1', 4)} 
+                            />
+                            <span className="text-xs flex-1">Define next quarter brand objectives and KPIs</span>
+                          </div>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-planning-sub-2')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-planning-sub-2', 4)} 
+                            />
+                            <span className="text-xs flex-1">Develop strategic initiative roadmap and timeline</span>
+                          </div>
+                          <div className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                            <Checkbox 
+                              checked={completedSubTasks.has('strategic-planning-sub-3')} 
+                              onCheckedChange={() => toggleSubTaskCompletion('strategic-planning-sub-3', 4)} 
+                            />
+                            <span className="text-xs flex-1">Allocate resources and assign team responsibilities</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
