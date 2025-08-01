@@ -490,88 +490,98 @@ export const BrandBlueprint = ({
           <TabsContent value="action-plan" className="space-y-6">
             {/* Brand Health Score */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <Target className="w-5 h-5 text-primary" />
-                    Brand Health Score
-                  </span>
-                  <div className="flex items-center gap-4">
-                    {(() => {
-                      // Calculate total tasks
-                      const quickWinTasks = 4;
-                      const momentumTasks = 5;
-                      const strategicMainTasks = 5;
-                      const strategicSubTasks = 15;
-                      const totalTasks = quickWinTasks + momentumTasks + strategicMainTasks + strategicSubTasks;
-                      
-                      // Calculate completed tasks
-                      const completedMainTasks = Array.from(completedTasks).length;
-                      const completedSubTasksCount = Array.from(completedSubTasks).length;
-                      const totalCompleted = completedMainTasks + completedSubTasksCount;
-                      
-                      // Calculate percentage
-                      const percentage = Math.round((totalCompleted / totalTasks) * 100);
-                      
-                      // Determine color based on percentage
-                      let circleColor = 'text-red-500';
-                      let bgColor = 'bg-red-500';
-                      if (percentage >= 70) {
-                        circleColor = 'text-green-500';
-                        bgColor = 'bg-green-500';
-                      } else if (percentage >= 40) {
-                        circleColor = 'text-yellow-500';
-                        bgColor = 'bg-yellow-500';
-                      }
-                      
-                      return (
-                        <>
-                          <div className="text-right">
-                            <div className="text-sm text-muted-foreground">
-                              {totalCompleted} of {totalTasks} tasks completed
-                            </div>
-                          </div>
-                          <div className="relative w-16 h-16">
-                            <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="28"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                                fill="none"
-                                className="text-muted/20"
-                              />
-                              <circle
-                                cx="32"
-                                cy="32"
-                                r="28"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                                fill="none"
-                                strokeDasharray={`${2 * Math.PI * 28}`}
-                                strokeDashoffset={`${2 * Math.PI * 28 * (1 - percentage / 100)}`}
-                                className={circleColor}
-                                style={{
-                                  transition: 'stroke-dashoffset 0.5s ease-in-out',
-                                }}
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className={`text-lg font-bold ${circleColor}`}>
-                                {percentage}
-                              </span>
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })()}
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold mb-2">Brand Health Score</h2>
+                    <p className="text-muted-foreground">
+                      Complete tasks below to improve your brand implementation health
+                    </p>
                   </div>
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  Track your brand implementation progress across all strategic initiatives
-                </p>
-              </CardHeader>
+                  
+                  {(() => {
+                    // Calculate total tasks
+                    const quickWinTasks = 4;
+                    const momentumTasks = 5;
+                    const strategicMainTasks = 5;
+                    const strategicSubTasks = 15;
+                    const totalTasks = quickWinTasks + momentumTasks + strategicMainTasks + strategicSubTasks;
+                    
+                    // Calculate completed tasks
+                    const completedMainTasks = Array.from(completedTasks).length;
+                    const completedSubTasksCount = Array.from(completedSubTasks).length;
+                    const totalCompleted = completedMainTasks + completedSubTasksCount;
+                    
+                    // Calculate percentage
+                    const percentage = Math.round((totalCompleted / totalTasks) * 100);
+                    
+                    // Determine color and status based on percentage
+                    let circleColor = 'text-red-500';
+                    let statusText = 'Needs Improvement';
+                    let statusColor = 'text-red-600';
+                    
+                    if (percentage >= 70) {
+                      circleColor = 'text-green-500';
+                      statusText = 'Excellent';
+                      statusColor = 'text-green-600';
+                    } else if (percentage >= 40) {
+                      circleColor = 'text-yellow-500';
+                      statusText = 'Good Progress';
+                      statusColor = 'text-yellow-600';
+                    }
+                    
+                    return (
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="relative w-32 h-32">
+                          <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 128 128">
+                            <circle
+                              cx="64"
+                              cy="64"
+                              r="56"
+                              stroke="currentColor"
+                              strokeWidth="8"
+                              fill="none"
+                              className="text-muted/20"
+                            />
+                            <circle
+                              cx="64"
+                              cy="64"
+                              r="56"
+                              stroke="currentColor"
+                              strokeWidth="8"
+                              fill="none"
+                              strokeDasharray={`${2 * Math.PI * 56}`}
+                              strokeDashoffset={`${2 * Math.PI * 56 * (1 - percentage / 100)}`}
+                              className={circleColor}
+                              style={{
+                                transition: 'stroke-dashoffset 0.5s ease-in-out',
+                              }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className={`text-3xl font-bold ${circleColor}`}>
+                              {percentage}
+                            </span>
+                            <span className="text-sm text-muted-foreground">/ 100</span>
+                          </div>
+                        </div>
+                        
+                        <div className="text-center space-y-2">
+                          <div className={`text-lg font-semibold ${statusColor}`}>
+                            {statusText}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {totalCompleted} of {totalTasks} tasks completed
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Complete the action plan below to reach 100%
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </CardContent>
             </Card>
             
             <Card>
