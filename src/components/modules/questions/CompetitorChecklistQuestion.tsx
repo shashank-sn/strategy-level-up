@@ -8,8 +8,8 @@ interface CompetitorChecklistQuestionProps {
     question: string;
     competitors: string[];
   };
-  value: Record<string, Record<string, 'strength' | 'weakness' | ''>> | undefined;
-  onChange: (value: Record<string, Record<string, 'strength' | 'weakness' | ''>>) => void;
+  value: Record<string, Record<string, 'strength' | 'moderate' | 'weakness' | ''>> | undefined;
+  onChange: (value: Record<string, Record<string, 'strength' | 'moderate' | 'weakness' | ''>>) => void;
 }
 
 const businessAttributes = [
@@ -22,7 +22,7 @@ const businessAttributes = [
 ];
 
 export const CompetitorChecklistQuestion = ({ question, value, onChange }: CompetitorChecklistQuestionProps) => {
-  const handleAttributeChange = (competitor: string, attribute: string, type: 'strength' | 'weakness') => {
+  const handleAttributeChange = (competitor: string, attribute: string, type: 'strength' | 'moderate' | 'weakness') => {
     const currentValue = value || {};
     const competitorData = currentValue[competitor] || {};
     
@@ -33,14 +33,14 @@ export const CompetitorChecklistQuestion = ({ question, value, onChange }: Compe
       ...currentValue,
       [competitor]: {
         ...competitorData,
-        [attribute]: newValue as 'strength' | 'weakness' | ''
+        [attribute]: newValue as 'strength' | 'moderate' | 'weakness' | ''
       }
     };
     
     onChange(updatedValue);
   };
 
-  const getAttributeValue = (competitor: string, attribute: string): 'strength' | 'weakness' | '' => {
+  const getAttributeValue = (competitor: string, attribute: string): 'strength' | 'moderate' | 'weakness' | '' => {
     return value?.[competitor]?.[attribute] || '';
   };
 
@@ -60,7 +60,7 @@ export const CompetitorChecklistQuestion = ({ question, value, onChange }: Compe
                 return (
                   <div key={attribute} className="space-y-2">
                     <div className="font-medium text-sm">{attribute}</div>
-                    <div className="flex gap-4">
+                    <div className="flex gap-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox
                           id={`${competitor}-${attribute}-strength`}
@@ -73,6 +73,21 @@ export const CompetitorChecklistQuestion = ({ question, value, onChange }: Compe
                         >
                           <Badge variant="default" className="bg-green-100 text-green-800">
                             Strength
+                          </Badge>
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`${competitor}-${attribute}-moderate`}
+                          checked={currentValue === 'moderate'}
+                          onCheckedChange={() => handleAttributeChange(competitor, attribute, 'moderate')}
+                        />
+                        <label 
+                          htmlFor={`${competitor}-${attribute}-moderate`}
+                          className="text-sm cursor-pointer"
+                        >
+                          <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
+                            Moderate
                           </Badge>
                         </label>
                       </div>

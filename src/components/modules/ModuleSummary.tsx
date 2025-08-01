@@ -11,7 +11,67 @@ interface ModuleSummaryProps {
   onBack: () => void;
 }
 
-export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: ModuleSummaryProps) => {
+export const ModuleSummary = ({ moduleTitle, answers, score, onComplete, onBack }: ModuleSummaryProps) => {
+  const renderAnswerSummary = () => {
+    if (!answers || Object.keys(answers).length === 0) {
+      return <p className="text-muted-foreground">No answers recorded</p>;
+    }
+
+    return (
+      <div className="space-y-4">
+        {Object.entries(answers).map(([key, value]) => {
+          let displayValue = "";
+          let label = "";
+
+          // Format the key for display
+          if (key.startsWith("competitor-")) {
+            const compNum = key.split("-")[1];
+            label = `Competitor ${compNum}`;
+            if (typeof value === 'object' && value !== null && 'name' in value) {
+              const comp = value as { name: string; description: string };
+              displayValue = `${comp.name}: ${comp.description}`;
+            } else {
+              displayValue = String(value);
+            }
+          } else if (key === "market-trends") {
+            label = "Market Trends";
+            displayValue = Array.isArray(value) ? value.join(", ") : String(value);
+          } else if (key === "strategic-insights") {
+            label = "Strategic Insights";
+            displayValue = String(value);
+          } else if (key === "competitor-checklist") {
+            label = "Competitor Analysis";
+            if (typeof value === 'object' && value !== null) {
+              const checklist = value as Record<string, Record<string, string>>;
+              displayValue = Object.entries(checklist)
+                .map(([competitor, attrs]) => 
+                  `${competitor}: ${Object.entries(attrs)
+                    .map(([attr, rating]) => `${attr} (${rating})`)
+                    .join(", ")}`
+                ).join("; ");
+            } else {
+              displayValue = String(value);
+            }
+          } else {
+            label = key.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+            displayValue = String(value);
+          }
+
+          return (
+            <div key={key} className="border-l-4 border-primary pl-4">
+              <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                {label}
+              </h4>
+              <p className="mt-1 text-sm leading-relaxed">
+                {displayValue.length > 200 ? `${displayValue.substring(0, 200)}...` : displayValue}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   // Calculate completion percentage
   const totalAnswers = Object.keys(answers).length;
   const answeredQuestions = Object.keys(answers).filter(key => 
@@ -19,32 +79,11 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
   ).length;
   const completionRate = totalAnswers > 0 ? Math.round((answeredQuestions / totalAnswers) * 100) : 0;
 
-  const generateStrategySummary = (answers: Record<string, any>): string => {
-    const { purpose, vision, mission } = answers;
-    
-    let summary = "Your brand foundation strategy is now taking shape. ";
-    
-    if (purpose) {
-      summary += `Your brand exists because ${purpose.toLowerCase()}. `;
-    }
-    
-    if (vision) {
-      summary += `You're working toward a future where ${vision.toLowerCase()}. `;
-    }
-    
-    if (mission) {
-      summary += `To achieve this vision, your approach will be to ${mission.toLowerCase()}. `;
-    }
-    
-    summary += "These foundational elements will guide every brand decision you make moving forward, ensuring consistency and authenticity in how you present yourself to the world.";
-    
-    return summary;
-  };
-
   const keyTakeaways = [
-    "Your brand foundation provides the strategic direction for all future decisions",
-    "Clear purpose, vision, and mission statements guide authentic brand building", 
-    "These core elements will be referenced throughout your brand development journey"
+    "You've identified your main competitors and their key attributes",
+    "Market trends analysis helps position your brand strategically", 
+    "Competitive strengths and weaknesses reveal opportunities for differentiation",
+    "These insights will guide your brand positioning and messaging strategy"
   ];
 
   return (
@@ -57,7 +96,7 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
           </div>
           <CardTitle className="text-2xl">Strategy Complete!</CardTitle>
           <p className="text-center text-muted-foreground mb-4">
-            You've successfully built your {moduleTitle.toLowerCase()} strategy
+            You've successfully completed your {moduleTitle.toLowerCase()} analysis
           </p>
           <Badge variant="default" className="text-lg px-4 py-2">
             {completionRate}% Complete
@@ -70,15 +109,11 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-primary" />
-            Your Brand Foundation Strategy
+            Your Competitive Analysis
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="prose prose-sm max-w-none">
-            <p className="text-muted-foreground leading-relaxed">
-              {generateStrategySummary(answers)}
-            </p>
-          </div>
+          {renderAnswerSummary()}
         </CardContent>
       </Card>
 
@@ -106,7 +141,7 @@ export const ModuleSummary = ({ moduleTitle, answers, onComplete, onBack }: Modu
       <div className="flex gap-4 justify-center">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
-          Back to Progress
+          Back to Analysis
         </Button>
         <Button onClick={onComplete} size="lg" className="flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />

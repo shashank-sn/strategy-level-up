@@ -30,6 +30,7 @@ interface ModuleData {
       type: 'binary' | 'mcq' | 'slider' | 'fill-blank' | 'text' | 'competitor-checklist' | 'competitor';
       question: string;
       options?: string[];
+      maxSelections?: number;
       competitors?: string[];
       min?: number;
       max?: number;
@@ -129,6 +130,7 @@ const CompetitiveAnalysisModule = () => {
         id: "market-trends",
         type: "mcq",
         question: "Which of the following market trends are most significantly impacting your industry or target audience right now? (Select up to 3)",
+        maxSelections: 3,
         options: [
           "Increased demand for sustainability",
           "Rise of AI/Automation",
@@ -158,7 +160,14 @@ const CompetitiveAnalysisModule = () => {
     ]
   };
 
-  const handleModuleComplete = (answers: Record<string, any>) => {
+  const [answers, setAnswers] = useState<Record<string, any>>({});
+
+  const handleModuleComplete = (finalAnswers: Record<string, any>) => {
+    setAnswers(finalAnswers);
+    setCurrentStep(2); // Go to summary
+  };
+
+  const handleSummaryComplete = () => {
     // Save the results and navigate back to progress
     console.log("Competitive Analysis module completed:", answers);
     // Here you could save to a database or local storage
@@ -231,9 +240,9 @@ const CompetitiveAnalysisModule = () => {
           {currentStep === 2 && (
             <ModuleSummary
               moduleTitle={moduleData.title}
-              answers={{}}
+              answers={answers}
               score={100}
-              onComplete={() => handleModuleComplete({})}
+              onComplete={handleSummaryComplete}
               onBack={handlePrevious}
             />
           )}

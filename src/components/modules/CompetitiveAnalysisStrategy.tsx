@@ -11,11 +11,21 @@ import { CompetitorQuestion } from "./questions/CompetitorQuestion";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+const businessAttributes = [
+  "Price",
+  "Quality", 
+  "Customer Service",
+  "Innovation",
+  "Brand Recognition",
+  "Community"
+];
+
 interface Question {
   id: string;
   type: "binary" | "mcq" | "slider" | "fill-blank" | "text" | "competitor-checklist" | "competitor";
   question: string;
   options?: string[];
+  maxSelections?: number;
   competitors?: string[];
   min?: number;
   max?: number;
@@ -100,10 +110,16 @@ export const CompetitiveAnalysisStrategy = ({
     if (question.type === "binary") return answer !== undefined;
     if (question.type === "slider") return answer !== undefined;
     if (question.type === "competitor-checklist") {
-      // For checklist, check if at least some attributes are filled for the available competitors
+      // For checklist, check if all attributes are filled for all available competitors
       const competitors = (question as any).competitors || [];
       if (competitors.length === 0) return false;
-      return answer && Object.keys(answer).length > 0;
+      if (!answer) return false;
+      
+      // Check if every competitor has ratings for all attributes
+      return competitors.every((competitor: string) => {
+        const competitorData = answer[competitor] || {};
+        return businessAttributes.every(attr => competitorData[attr] && competitorData[attr] !== '');
+      });
     }
     if (question.type === "competitor") {
       return answer && answer.name && answer.name.trim() !== "" && answer.description && answer.description.trim() !== "";
