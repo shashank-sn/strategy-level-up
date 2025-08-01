@@ -285,9 +285,8 @@ export const BrandBlueprint = ({
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="summary">One-Page Summary</TabsTrigger>
-            <TabsTrigger value="guidelines">Brand Guidelines</TabsTrigger>
             <TabsTrigger value="action-plan">Action Plan</TabsTrigger>
             <TabsTrigger value="brand-kit">Brand Kit</TabsTrigger>
           </TabsList>
@@ -387,75 +386,105 @@ export const BrandBlueprint = ({
                       </div>)}
                   </div>
                 </div>
+
+                <Separator />
+
+                {/* Messaging Guidelines */}
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-primary" />
+                      Messaging Guidelines
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">Key Messages</h4>
+                        <ul className="text-sm space-y-1">
+                          <li>• {mockBrandData.promise}</li>
+                          <li>• Technology that scales with your business</li>
+                          <li>• Professional support, personal touch</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-2">Language to Use</h4>
+                        <div className="text-sm space-y-1">
+                          <p>• Empowering, supportive, reliable</p>
+                          <p>• Solution-focused, growth-oriented</p>
+                          <p>• Clear, jargon-free explanations</p>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-2">Language to Avoid</h4>
+                        <div className="text-sm space-y-1 text-muted-foreground">
+                          <p>• Complex technical jargon</p>
+                          <p>• Overly corporate language</p>
+                          <p>• Negative or limiting terms</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-primary" />
+                      Differentiation Matrix
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Product Features</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${mockBrandData.differentiators.product * 10}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground w-6">{mockBrandData.differentiators.product}/10</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Distribution</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${mockBrandData.differentiators.distribution * 10}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground w-6">{mockBrandData.differentiators.distribution}/10</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Marketing</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${mockBrandData.differentiators.marketing * 10}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground w-6">{mockBrandData.differentiators.marketing}/10</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Pricing Strategy</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-muted rounded-full h-2">
+                            <div 
+                              className="bg-primary h-2 rounded-full" 
+                              style={{ width: `${mockBrandData.differentiators.pricing * 10}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-muted-foreground w-6">{mockBrandData.differentiators.pricing}/10</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Brand Guidelines */}
-          <TabsContent value="guidelines" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-primary" />
-                    Messaging Guidelines
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-medium mb-2">Key Messages</h4>
-                    <ul className="text-sm space-y-1">
-                      <li>• {mockBrandData.promise}</li>
-                      <li>• Technology that scales with your business</li>
-                      <li>• Professional support, personal touch</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-medium mb-2">Language to Use</h4>
-                    <div className="text-sm space-y-1">
-                      <p>• Empowering, supportive, reliable</p>
-                      <p>• Solution-focused, growth-oriented</p>
-                      <p>• Clear, jargon-free explanations</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-medium mb-2">Language to Avoid</h4>
-                    <div className="text-sm space-y-1 text-muted-foreground">
-                      <p>• Complex technical jargon</p>
-                      <p>• Overly corporate language</p>
-                      <p>• Negative or limiting terms</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" />
-                    Differentiation Matrix
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {Object.entries(mockBrandData.differentiators).map(([key, value]) => <div key={key} className="flex justify-between items-center">
-                        <span className="text-sm font-medium capitalize">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 bg-muted rounded-full h-2">
-                            <div className="bg-primary h-2 rounded-full" style={{
-                          width: `${(value as number) * 10}%`
-                        }} />
-                          </div>
-                          <span className="text-sm font-medium text-primary">{value}/10</span>
-                        </div>
-                      </div>)}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
           {/* Action Plan */}
           <TabsContent value="action-plan" className="space-y-6">
