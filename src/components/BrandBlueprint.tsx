@@ -371,48 +371,108 @@ export const BrandBlueprint = ({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  {/* Quick Wins Todo List */}
+                <div className="space-y-8">
+                  {/* Part 1: Quick Wins (0-15 days) */}
                   <div>
-                    <h3 className="font-semibold mb-4">Immediate Actions (Next 2 weeks)</h3>
-                    <div className="space-y-3">
-                      {/* Add new todo */}
-                      
-                      
-                      {/* Todo items */}
-                      <div className="space-y-2">
-                        {todoItems.map(item => <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg group">
-                            <div className="flex items-center gap-3 flex-1">
-                              <Checkbox checked={item.completed} onCheckedChange={() => toggleTodo(item.id)} />
-                              <span className={`text-sm flex-1 ${item.completed ? 'line-through text-muted-foreground' : ''}`}>
-                                {item.text}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant={item.completed ? "default" : "secondary"}>
-                                {item.completed ? "Complete" : "Quick Win"}
-                              </Badge>
-                              <Button size="sm" variant="ghost" onClick={() => removeTodo(item.id)} className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>)}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <span className="text-green-600 font-bold text-sm">1</span>
+                      </div>
+                      <h3 className="font-semibold text-lg">Quick Wins (Days 0-15)</h3>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Update website messaging with new brand positioning</span>
+                        <Badge variant="secondary">Quick Win</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Create email signature with consistent brand elements</span>
+                        <Badge variant="secondary">Quick Win</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Update social media profiles with new brand voice</span>
+                        <Badge variant="secondary">Quick Win</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Launch first content piece showcasing brand personality</span>
+                        <Badge variant="secondary">Quick Win</Badge>
                       </div>
                     </div>
                   </div>
 
-                  {/* Pillar Actions */}
+                  {/* Part 2: Momentum Builders (15-45 days) */}
                   <div>
-                    <h3 className="font-semibold mb-4">Strategic Pillar Actions (30-90 days)</h3>
-                    <div className="space-y-3">
-                      {mockBrandData.pillars.map((pillar, index) => <div key={index} className="p-4 border rounded-lg">
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium">{pillar.name}</h4>
-                            <Badge variant="outline">Strategic</Badge>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-sm">2</span>
+                      </div>
+                      <h3 className="font-semibold text-lg">Momentum Builders (Days 15-45)</h3>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Implement customer onboarding sequence with brand messaging</span>
+                        <Badge variant="outline">Momentum</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Launch content marketing series aligned with brand pillars</span>
+                        <Badge variant="outline">Momentum</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Train team on brand voice and messaging guidelines</span>
+                        <Badge variant="outline">Momentum</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Create brand-aligned sales materials and presentations</span>
+                        <Badge variant="outline">Momentum</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Establish customer feedback loop for brand validation</span>
+                        <Badge variant="outline">Momentum</Badge>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Part 3: Strategic Pillars (45-90 days) */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span className="text-purple-600 font-bold text-sm">3</span>
+                      </div>
+                      <h3 className="font-semibold text-lg">Strategic Pillars (Days 45-90)</h3>
+                    </div>
+                    <div className="ml-11 space-y-3">
+                      {mockBrandData.pillars.map((pillar, index) => (
+                        <div key={index} className="p-4 border rounded-lg">
+                          <div className="flex items-center gap-3 mb-3">
+                            <Checkbox />
+                            <h4 className="font-medium flex-1">{pillar.name}</h4>
+                            <Badge variant="default">Strategic</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
-                          <p className="text-sm"><strong>Action:</strong> {pillar.action}</p>
-                        </div>)}
+                          <div className="ml-8">
+                            <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
+                            <p className="text-sm"><strong>Action:</strong> {pillar.action}</p>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Conduct brand audit and performance review</span>
+                        <Badge variant="default">Strategic</Badge>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 border rounded-lg">
+                        <Checkbox />
+                        <span className="text-sm flex-1">Plan next quarter brand evolution strategy</span>
+                        <Badge variant="default">Strategic</Badge>
+                      </div>
                     </div>
                   </div>
                 </div>
