@@ -416,27 +416,27 @@ export const BrandBlueprint = ({
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Implement customer onboarding sequence with brand messaging</span>
-                        <Badge variant="outline">Momentum</Badge>
+                        <Badge variant="secondary">Momentum Builder</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Launch content marketing series aligned with brand pillars</span>
-                        <Badge variant="outline">Momentum</Badge>
+                        <Badge variant="secondary">Momentum Builder</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Train team on brand voice and messaging guidelines</span>
-                        <Badge variant="outline">Momentum</Badge>
+                        <Badge variant="secondary">Momentum Builder</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Create brand-aligned sales materials and presentations</span>
-                        <Badge variant="outline">Momentum</Badge>
+                        <Badge variant="secondary">Momentum Builder</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Establish customer feedback loop for brand validation</span>
-                        <Badge variant="outline">Momentum</Badge>
+                        <Badge variant="secondary">Momentum Builder</Badge>
                       </div>
                     </div>
                   </div>
@@ -455,7 +455,7 @@ export const BrandBlueprint = ({
                           <div className="flex items-center gap-3 mb-3">
                             <Checkbox />
                             <h4 className="font-medium flex-1">{pillar.name}</h4>
-                            <Badge variant="default">Strategic</Badge>
+                            <Badge variant="secondary">Strategic Pillar</Badge>
                           </div>
                           <div className="ml-8">
                             <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
@@ -466,12 +466,12 @@ export const BrandBlueprint = ({
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Conduct brand audit and performance review</span>
-                        <Badge variant="default">Strategic</Badge>
+                        <Badge variant="secondary">Strategic Pillar</Badge>
                       </div>
                       <div className="flex items-center gap-3 p-3 border rounded-lg">
                         <Checkbox />
                         <span className="text-sm flex-1">Plan next quarter brand evolution strategy</span>
-                        <Badge variant="default">Strategic</Badge>
+                        <Badge variant="secondary">Strategic Pillar</Badge>
                       </div>
                     </div>
                   </div>
