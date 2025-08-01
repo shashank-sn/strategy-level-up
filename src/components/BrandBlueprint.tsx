@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Download, 
   Share2, 
@@ -17,7 +19,9 @@ import {
   Calendar,
   Palette,
   Globe,
-  Upload
+  Upload,
+  Plus,
+  X
 } from "lucide-react";
 
 interface BrandBlueprintProps {
@@ -28,6 +32,14 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
   const [isGenerating, setIsGenerating] = useState(true);
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("summary");
+  
+  // Todo list state
+  const [todoItems, setTodoItems] = useState([
+    { id: 1, text: "Update website messaging", completed: false },
+    { id: 2, text: "Launch content marketing series", completed: false },
+    { id: 3, text: "Implement customer onboarding sequence", completed: false }
+  ]);
+  const [newTodoText, setNewTodoText] = useState("");
 
   // Simulate blueprint generation
   useEffect(() => {
@@ -101,6 +113,31 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
     const shareUrl = `${mockBrandData.companyName.toLowerCase().replace(/\s+/g, '')}.yourbrandstrategist.com`;
     navigator.clipboard.writeText(shareUrl);
     console.log(`Copied share URL: ${shareUrl}`);
+  };
+
+  // Todo list functions
+  const toggleTodo = (id: number) => {
+    setTodoItems(items => 
+      items.map(item => 
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    );
+  };
+
+  const addTodo = () => {
+    if (newTodoText.trim()) {
+      const newTodo = {
+        id: Date.now(),
+        text: newTodoText.trim(),
+        completed: false
+      };
+      setTodoItems(items => [...items, newTodo]);
+      setNewTodoText("");
+    }
+  };
+
+  const removeTodo = (id: number) => {
+    setTodoItems(items => items.filter(item => item.id !== id));
   };
 
   if (isGenerating) {
@@ -377,19 +414,53 @@ export const BrandBlueprint = ({ brandData }: BrandBlueprintProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {/* Quick Wins */}
+                  {/* Quick Wins Todo List */}
                   <div>
                     <h3 className="font-semibold mb-4">Immediate Actions (Next 2 weeks)</h3>
-                    <div className="space-y-2">
-                      {mockBrandData.quickWins.map((action, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <CheckCircle className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm">{action}</span>
+                    <div className="space-y-3">
+                      {/* Add new todo */}
+                      <div className="flex items-center gap-2 p-3 border border-dashed rounded-lg">
+                        <Input
+                          placeholder="Add new action item..."
+                          value={newTodoText}
+                          onChange={(e) => setNewTodoText(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && addTodo()}
+                          className="flex-1"
+                        />
+                        <Button size="sm" onClick={addTodo}>
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      {/* Todo items */}
+                      <div className="space-y-2">
+                        {todoItems.map((item) => (
+                          <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg group">
+                            <div className="flex items-center gap-3 flex-1">
+                              <Checkbox
+                                checked={item.completed}
+                                onCheckedChange={() => toggleTodo(item.id)}
+                              />
+                              <span className={`text-sm flex-1 ${item.completed ? 'line-through text-muted-foreground' : ''}`}>
+                                {item.text}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={item.completed ? "default" : "secondary"}>
+                                {item.completed ? "Complete" : "Quick Win"}
+                              </Badge>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => removeTodo(item.id)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
-                          <Badge variant="secondary">Quick Win</Badge>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
 
