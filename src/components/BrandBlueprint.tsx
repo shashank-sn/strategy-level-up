@@ -36,6 +36,7 @@ export const BrandBlueprint = ({
 
   // Checklist completion state
   const [completedTasks, setCompletedTasks] = useState(new Set());
+  const [completedSubTasks, setCompletedSubTasks] = useState(new Set());
 
   // Simulate blueprint generation
   useEffect(() => {
@@ -72,15 +73,30 @@ export const BrandBlueprint = ({
     pillars: [{
       name: "Customer Success",
       purpose: "Ensure every customer achieves their business goals",
-      action: "Launch customer success program with quarterly check-ins"
+      action: "Launch customer success program with quarterly check-ins",
+      subTasks: [
+        "Set up customer health scoring system",
+        "Create quarterly review meeting templates",
+        "Implement customer feedback tracking"
+      ]
     }, {
       name: "Product Innovation",
       purpose: "Stay ahead with cutting-edge features",
-      action: "Implement monthly feature releases based on user feedback"
+      action: "Implement monthly feature releases based on user feedback",
+      subTasks: [
+        "Establish feature request collection system",
+        "Set up monthly development sprint cycles",
+        "Create user testing feedback loop"
+      ]
     }, {
       name: "Market Expansion",
       purpose: "Reach new business segments",
-      action: "Develop partnerships with 3 industry associations"
+      action: "Develop partnerships with 3 industry associations",
+      subTasks: [
+        "Research and identify target industry associations",
+        "Prepare partnership proposal presentations",
+        "Schedule meetings with association leaders"
+      ]
     }],
     quickWins: ["Update website messaging", "Launch content marketing series", "Implement customer onboarding sequence"],
     voiceTone: ["Professional", "Empathetic", "Direct"]
@@ -126,6 +142,47 @@ export const BrandBlueprint = ({
       } else {
         newCompleted.add(taskId);
       }
+      return newCompleted;
+    });
+  };
+
+  // Sub-task completion handler
+  const toggleSubTaskCompletion = (subTaskId: string, pillarIndex: number) => {
+    setCompletedSubTasks(prev => {
+      const newCompleted = new Set(prev);
+      if (newCompleted.has(subTaskId)) {
+        newCompleted.delete(subTaskId);
+      } else {
+        newCompleted.add(subTaskId);
+      }
+      
+      // Check if all 3 sub-tasks for this pillar are completed
+      const subTasksForPillar = [
+        `strategic-${pillarIndex + 1}-sub-1`,
+        `strategic-${pillarIndex + 1}-sub-2`, 
+        `strategic-${pillarIndex + 1}-sub-3`
+      ];
+      
+      const allSubTasksCompleted = subTasksForPillar.every(id => 
+        id === subTaskId ? newCompleted.has(id) : completedSubTasks.has(id)
+      );
+      
+      // Auto-complete main task if all sub-tasks are done
+      if (allSubTasksCompleted) {
+        setCompletedTasks(prevMain => {
+          const newMainCompleted = new Set(prevMain);
+          newMainCompleted.add(`strategic-${pillarIndex + 1}`);
+          return newMainCompleted;
+        });
+      } else {
+        // Remove main task completion if not all sub-tasks are done
+        setCompletedTasks(prevMain => {
+          const newMainCompleted = new Set(prevMain);
+          newMainCompleted.delete(`strategic-${pillarIndex + 1}`);
+          return newMainCompleted;
+        });
+      }
+      
       return newCompleted;
     });
   };
@@ -543,7 +600,7 @@ export const BrandBlueprint = ({
                           <div className="flex items-center gap-3 mb-3">
                             <Checkbox 
                               checked={completedTasks.has(`strategic-${index + 1}`)} 
-                              onCheckedChange={() => toggleTaskCompletion(`strategic-${index + 1}`)} 
+                              disabled={true}
                             />
                             <h4 className="font-medium flex-1">{pillar.name}</h4>
                             <Badge 
@@ -553,9 +610,23 @@ export const BrandBlueprint = ({
                               {completedTasks.has(`strategic-${index + 1}`) ? "Completed" : "Strategic Pillar"}
                             </Badge>
                           </div>
-                          <div className="ml-8">
+                          <div className="ml-8 mb-4">
                             <p className="text-sm text-muted-foreground mb-2">{pillar.purpose}</p>
                             <p className="text-sm"><strong>Action:</strong> {pillar.action}</p>
+                          </div>
+                          
+                          {/* Sub-tasks */}
+                          <div className="ml-8 space-y-2">
+                            <h5 className="text-sm font-medium text-muted-foreground mb-2">Sub-tasks:</h5>
+                            {pillar.subTasks.map((subTask, subIndex) => (
+                              <div key={subIndex} className="flex items-center gap-3 p-2 border rounded-md bg-muted/30">
+                                <Checkbox 
+                                  checked={completedSubTasks.has(`strategic-${index + 1}-sub-${subIndex + 1}`)} 
+                                  onCheckedChange={() => toggleSubTaskCompletion(`strategic-${index + 1}-sub-${subIndex + 1}`, index)} 
+                                />
+                                <span className="text-xs flex-1">{subTask}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}
