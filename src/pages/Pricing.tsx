@@ -70,13 +70,7 @@ const Pricing = () => {
                   </div>)}
               </div>
 
-              <div className="bg-secondary/50 p-4 rounded-lg">
-                <h4 className="font-semibold text-sm mb-2">What are AI Credits?</h4>
-                <p className="text-sm text-muted-foreground">
-                  1 AI Credit = 1 AI-powered action (like "Optimize with AI", "Show Examples", or content synthesis). 
-                  50 credits are designed to complete all modules with several optimizations and refinements.
-                </p>
-              </div>
+              
 
               <Button size="lg" className="w-full" asChild>
                 <Link to="/progress">Start Your Brand Journey - $499</Link>
