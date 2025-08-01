@@ -18,17 +18,20 @@ const AuditSignIn = ({ onNext, onPrevious, userName, userDetails }: AuditSignInP
   const { user, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [hasProcessedUser, setHasProcessedUser] = useState(false);
 
   // Check if user is already logged in and save details
   useEffect(() => {
-    if (user) {
+    if (user && !hasProcessedUser) {
+      setHasProcessedUser(true);
       saveUserDetailsToDatabase();
     }
-  }, [user]);
+  }, [user, hasProcessedUser]);
 
   const saveUserDetailsToDatabase = async () => {
     if (!user) return;
 
+    setLoading(true);
     try {
       // Update or insert user profile with company details
       const { error } = await supabase
@@ -56,8 +59,10 @@ const AuditSignIn = ({ onNext, onPrevious, userName, userDetails }: AuditSignInP
         });
       }
       
-      // Proceed to next step
-      onNext();
+      // Proceed to next step after successful save
+      setTimeout(() => {
+        onNext();
+      }, 1000);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -65,21 +70,33 @@ const AuditSignIn = ({ onNext, onPrevious, userName, userDetails }: AuditSignInP
         description: "Failed to save your details. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive"
+        });
+        setLoading(false);
+      }
+      // Loading will be handled by useEffect when user state changes
+    } catch (error) {
+      console.error('Google sign in error:', error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "Failed to sign in with Google. Please try again.",
         variant: "destructive"
       });
       setLoading(false);
     }
-    // Note: setLoading(false) will be handled by useEffect when user state changes
   };
 
   return (
