@@ -1,8 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Star, Users, Target, Zap, TrendingUp, Award, Lightbulb } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 const Hero = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleStartAudit = () => {
+    const target = "/brand-audit?resume=1";
+    if (user) navigate(target);
+    else navigate(`/auth?next=${encodeURIComponent(target)}`);
+  };
+
   return <section className="relative py-20 lg:py-32 overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
@@ -29,11 +39,9 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="hero" size="lg" asChild>
-              <Link to="/brand-audit">
-                <Play className="w-5 h-5 mr-2" />
-                Start Free Brand Audit
-              </Link>
+            <Button variant="hero" size="lg" onClick={handleStartAudit} aria-label="Start free brand audit">
+              <Play className="w-5 h-5 mr-2" />
+              Start Free Brand Audit
             </Button>
             <Button variant="outline" size="lg">
               <Lightbulb className="w-5 h-5 mr-2" />
