@@ -90,6 +90,7 @@ export const ModuleWrapper = ({ moduleData, onComplete, onBack }: ModuleWrapperP
       case "strategy":
         return (
           <StrategyBuilding
+            moduleId={moduleData.id}
             learningContent={moduleData.learningContent}
             questions={moduleData.questions}
             onComplete={handleStrategyComplete}

@@ -1,5 +1,9 @@
 import { ModuleWrapper, ModuleData } from "@/components/modules/ModuleWrapper";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useProgress } from "@/contexts/ProgressContext";
+import { toast } from "@/components/ui/use-toast";
 
 const BrandFoundationModule = () => {
   const navigate = useNavigate();

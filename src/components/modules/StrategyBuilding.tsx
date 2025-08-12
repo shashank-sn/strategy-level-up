@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BinaryQuestion } from "./questions/BinaryQuestion";
@@ -9,7 +9,7 @@ import { TextQuestion } from "./questions/TextQuestion";
 import { CompetitorChecklistQuestion } from "./questions/CompetitorChecklistQuestion";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
+import { useModuleResponses } from "@/hooks/useModuleResponses";
 interface Question {
   id: string;
   type: "binary" | "mcq" | "slider" | "fill-blank" | "text" | "competitor-checklist";
@@ -34,6 +34,7 @@ interface LearningContent {
 }
 
 interface StrategyBuildingProps {
+  moduleId: string;
   learningContent: LearningContent;
   questions: Question[];
   onComplete: (answers: Record<string, any>) => void;
@@ -41,6 +42,7 @@ interface StrategyBuildingProps {
 }
 
 export const StrategyBuilding = ({ 
+  moduleId,
   learningContent, 
   questions, 
   onComplete, 
@@ -49,15 +51,26 @@ export const StrategyBuilding = ({
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
 
+  const { initialAnswers, saveAnswers } = useModuleResponses({
+    moduleId,
+    questions: questions.map((q) => ({ id: q.id, question: q.question })),
+  });
+
+  useEffect(() => {
+    if (initialAnswers && Object.keys(initialAnswers).length > 0) {
+      setAnswers((prev) => ({ ...prev, ...initialAnswers }));
+    }
+  }, [initialAnswers]);
   const currentQuestion = questions[currentQuestionIndex];
   const currentSection = learningContent.sections[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   const handleAnswerChange = (questionId: string, value: any) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
+    setAnswers(prev => {
+      const next = { ...prev, [questionId]: value };
+      saveAnswers(next);
+      return next;
+    });
   };
 
   const handleNext = () => {
