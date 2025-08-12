@@ -23,6 +23,7 @@ import BrandBlueprintPage from "./pages/BrandBlueprintPage";
 import ProgressDashboardPage from "./pages/ProgressDashboardPage";
 import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound";
+import PostAuthRedirect from "./pages/PostAuthRedirect";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/brand-blueprint" element={<BrandBlueprintPage />} />
           <Route path="/progress" element={<ProgressDashboardPage />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/post-auth" element={<PostAuthRedirect />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<{ error: any }>;
+  signInWithGoogle: (nextPath?: string) => Promise<{ error: any }>;
   signInWithEmail: (email: string, password: string) => Promise<{ error: any }>;
   signUpWithEmail: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
@@ -39,16 +39,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGoogle = async () => {
-    const redirectUrl = `${window.location.origin}/`;
-    
+  const signInWithGoogle = async (nextPath?: string) => {
+    // Store intended destination; default to resuming the audit
+    const intended = nextPath || '/brand-audit?resume=1';
+    localStorage.setItem('postAuthNext', intended);
+
+    const redirectUrl = `${window.location.origin}/post-auth`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectUrl
       }
     });
-    
     return { error };
   };
 

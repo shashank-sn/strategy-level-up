@@ -78,7 +78,8 @@ const AuditSignIn = ({ onNext, onPrevious, userName, userDetails }: AuditSignInP
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const { error } = await signInWithGoogle();
+      localStorage.setItem('postAuthNext', '/brand-audit?resume=1');
+      const { error } = await signInWithGoogle('/brand-audit?resume=1');
       if (error) {
         toast({
           title: "Error",

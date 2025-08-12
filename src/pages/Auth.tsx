@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 export default function Auth() {
   const { user, signInWithGoogle } = useAuth();
@@ -12,12 +12,12 @@ export default function Auth() {
 
   // Redirect if already logged in
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/post-auth" replace />;
   }
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    const { error } = await signInWithGoogle();
+    const { error } = await signInWithGoogle(nextPath);
     if (error) {
       toast({
         title: "Error",

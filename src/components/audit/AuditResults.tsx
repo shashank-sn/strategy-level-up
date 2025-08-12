@@ -6,6 +6,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ArrowLeft, TrendingUp, Target, Lightbulb, CheckCircle, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserDetails, AuditAnswers } from "@/pages/BrandAudit";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useRef } from "react";
 
 interface AuditResultsProps {
   userDetails: UserDetails;
@@ -60,6 +63,29 @@ const getStrengthsAndWeaknesses = (answers: AuditAnswers) => {
 const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) => {
   const score = calculateScore(answers);
   const scoreCategory = getScoreCategory(score);
+  const { user } = useAuth();
+  const savedRef = useRef(false);
+
+  useEffect(() => {
+    if (!user || savedRef.current) return;
+    savedRef.current = true;
+    (async () => {
+      try {
+        await supabase.from('brand_audits').insert({
+          user_id: user.id,
+          status: 'completed',
+          title: 'Brand Health Check',
+          total_score: score,
+          max_possible_score: 100,
+          completion_percentage: 100,
+          completed_at: new Date().toISOString()
+        });
+      } catch (e) {
+        // Ignore errors; routing will fallback to audit next time
+      }
+    })();
+  }, [user, score]);
+
   const { strengths, weaknesses } = getStrengthsAndWeaknesses(answers);
 
   return (

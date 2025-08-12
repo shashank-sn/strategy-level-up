@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,6 +9,9 @@ import UserDetailsForm from "@/components/audit/UserDetailsForm";
 import AuditSignIn from "@/components/audit/AuditSignIn";
 import AuditQuestions from "@/components/audit/AuditQuestions";
 import AuditResults from "@/components/audit/AuditResults";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export type UserDetails = {
   name: string;
@@ -32,6 +35,41 @@ const BrandAudit = () => {
     company: "",
   });
   const [auditAnswers, setAuditAnswers] = useState<AuditAnswers>({});
+
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Jump straight to assessment after auth when resume=1
+  useEffect(() => {
+    if (searchParams.get('resume') === '1') {
+      setCurrentStep(3);
+    }
+  }, [searchParams]);
+
+  // Gate access based on auth and prior completion
+  useEffect(() => {
+    if (loading) return;
+
+    if (!user) {
+      const next = encodeURIComponent('/brand-audit?resume=1');
+      navigate(`/auth?next=${next}`, { replace: true });
+      return;
+    }
+
+    (async () => {
+      const { data } = await supabase
+        .from('brand_audits')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed')
+        .limit(1);
+
+      if (data && data.length > 0) {
+        navigate('/progress', { replace: true });
+      }
+    })();
+  }, [user, loading, navigate]);
 
   const steps = [
     "Introduction",
