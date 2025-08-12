@@ -110,7 +110,7 @@ export const ProgressDashboard = () => {
           'one_word'
         ];
 
-        const [auditRes, profileRes, respRes, respGoalsRes, respFounderRes, respPersonalityRes] = await Promise.all([
+        const [auditRes, profileRes, respRes, respGoalsRes, respFounderRes, respPersonalityRes, personasRes] = await Promise.all([
           supabase
             .from('brand_audits')
             .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
@@ -143,7 +143,11 @@ export const ProgressDashboard = () => {
             .from('module_responses')
             .select('question_id, response_data')
             .eq('user_id', user.id)
-            .eq('module_id', 'brand-personality')
+            .eq('module_id', 'brand-personality'),
+          supabase
+            .from('audience_personas')
+            .select('id')
+            .eq('user_id', user.id)
         ]);
 
         const audit = auditRes.data as any;
@@ -180,6 +184,10 @@ export const ProgressDashboard = () => {
         const answeredPersonality = responsesPersonality.filter(r => personalityQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
         const personalityScore = Math.round((answeredPersonality / personalityQuestionIds.length) * 100);
 
+        // Compute Audience Personas score based on number of personas created (out of 3 required)
+        const personaCount = ((personasRes.data || []) as Array<{ id: string }>).length;
+        const audienceScore = Math.round(Math.min(100, (personaCount / 3) * 100));
+
         if (!active) return;
 
         setModules((prev) =>
@@ -208,6 +216,10 @@ export const ProgressDashboard = () => {
             if (m.id === 'personality') {
               const completed = personalityScore >= 100;
               return { ...m, score: personalityScore, completed, locked: false };
+            }
+            if (m.id === 'audience') {
+              const completed = audienceScore >= 100;
+              return { ...m, score: audienceScore, completed, locked: false };
             }
             return m;
           })
