@@ -98,8 +98,19 @@ export const ProgressDashboard = () => {
           'branding_problem',
           'obstacles_overcome'
         ];
+        const personalityQuestionIds = [
+          'innovative_traditional',
+          'playful_serious',
+          'luxury_affordable',
+          'friendly_authoritative',
+          'modern_classic',
+          'brand_animal',
+          'brand_as_person',
+          'core_values',
+          'one_word'
+        ];
 
-        const [auditRes, profileRes, respRes, respGoalsRes, respFounderRes] = await Promise.all([
+        const [auditRes, profileRes, respRes, respGoalsRes, respFounderRes, respPersonalityRes] = await Promise.all([
           supabase
             .from('brand_audits')
             .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
@@ -127,7 +138,12 @@ export const ProgressDashboard = () => {
             .from('module_responses')
             .select('question_id, response_data')
             .eq('user_id', user.id)
-            .eq('module_id', 'founder-story')
+            .eq('module_id', 'founder-story'),
+          supabase
+            .from('module_responses')
+            .select('question_id, response_data')
+            .eq('user_id', user.id)
+            .eq('module_id', 'brand-personality')
         ]);
 
         const audit = auditRes.data as any;
@@ -159,6 +175,11 @@ export const ProgressDashboard = () => {
         const answeredFounder = responsesFounder.filter(r => founderStoryQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
         const founderStoryScore = Math.round((answeredFounder / founderStoryQuestionIds.length) * 100);
 
+        // Compute Brand Personality score based on answered required questions
+        const responsesPersonality = (respPersonalityRes.data || []) as Array<{ question_id: string; response_data: any }>;
+        const answeredPersonality = responsesPersonality.filter(r => personalityQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
+        const personalityScore = Math.round((answeredPersonality / personalityQuestionIds.length) * 100);
+
         if (!active) return;
 
         setModules((prev) =>
@@ -183,6 +204,10 @@ export const ProgressDashboard = () => {
             if (m.id === 'founder-story') {
               const completed = founderStoryScore >= 100;
               return { ...m, score: founderStoryScore, completed, locked: false };
+            }
+            if (m.id === 'personality') {
+              const completed = personalityScore >= 100;
+              return { ...m, score: personalityScore, completed, locked: false };
             }
             return m;
           })
