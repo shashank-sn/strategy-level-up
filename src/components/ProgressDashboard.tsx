@@ -90,8 +90,16 @@ export const ProgressDashboard = () => {
           'customer_loyalty_confidence',
           'measurement_strategy'
         ];
+        const founderStoryQuestionIds = [
+          'founder_story_hook',
+          'biggest_challenge',
+          'marketing_problem',
+          'distribution_sales_problem',
+          'branding_problem',
+          'obstacles_overcome'
+        ];
 
-        const [auditRes, profileRes, respRes, respGoalsRes] = await Promise.all([
+        const [auditRes, profileRes, respRes, respGoalsRes, respFounderRes] = await Promise.all([
           supabase
             .from('brand_audits')
             .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
@@ -114,7 +122,12 @@ export const ProgressDashboard = () => {
             .from('module_responses')
             .select('question_id, response_data')
             .eq('user_id', user.id)
-            .eq('module_id', 'business-goals')
+            .eq('module_id', 'business-goals'),
+          supabase
+            .from('module_responses')
+            .select('question_id, response_data')
+            .eq('user_id', user.id)
+            .eq('module_id', 'founder-story')
         ]);
 
         const audit = auditRes.data as any;
@@ -141,6 +154,11 @@ export const ProgressDashboard = () => {
         const answeredGoals = responsesGoals.filter(r => businessGoalsQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
         const businessGoalsScore = Math.round((answeredGoals / businessGoalsQuestionIds.length) * 100);
 
+        // Compute Founder Story score based on answered required questions
+        const responsesFounder = (respFounderRes.data || []) as Array<{ question_id: string; response_data: any }>;
+        const answeredFounder = responsesFounder.filter(r => founderStoryQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
+        const founderStoryScore = Math.round((answeredFounder / founderStoryQuestionIds.length) * 100);
+
         if (!active) return;
 
         setModules((prev) =>
@@ -161,6 +179,10 @@ export const ProgressDashboard = () => {
             if (m.id === 'business-goals') {
               const completed = businessGoalsScore >= 100;
               return { ...m, score: businessGoalsScore, completed, locked: false };
+            }
+            if (m.id === 'founder-story') {
+              const completed = founderStoryScore >= 100;
+              return { ...m, score: founderStoryScore, completed, locked: false };
             }
             return m;
           })
