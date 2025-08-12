@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -35,6 +35,10 @@ const BrandAudit = () => {
     company: "",
   });
   const [auditAnswers, setAuditAnswers] = useState<AuditAnswers>({});
+  const [draftAuditId, setDraftAuditId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeout = useRef<number | null>(null);
+  const lastSavedRef = useRef<string>("");
 
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -85,6 +89,82 @@ const BrandAudit = () => {
       }
     })();
   }, [user, loading, navigate]);
+
+  // Load latest audit (draft or completed) to hydrate state and resume editing
+  useEffect(() => {
+    if (!user || loading) return;
+
+    (async () => {
+      const { data, error } = await supabase
+        .from('brand_audits')
+        .select('id, status, answers, user_details')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error('[BrandAudit] Failed to load latest audit:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const row: any = data[0];
+        if (row.answers) setAuditAnswers(row.answers);
+        if (row.user_details) setUserDetails((prev) => ({ ...prev, ...row.user_details }));
+        if (row.status === 'draft') setDraftAuditId(row.id);
+      }
+    })();
+  }, [user, loading]);
+
+  // Debounced autosave of answers and user details into a draft audit
+  useEffect(() => {
+    if (!user) return;
+
+    const snapshot = JSON.stringify({ userDetails, auditAnswers });
+    if (snapshot === lastSavedRef.current) return;
+
+    if (saveTimeout.current) window.clearTimeout(saveTimeout.current);
+
+    saveTimeout.current = window.setTimeout(async () => {
+      setIsSaving(true);
+      try {
+        if (draftAuditId) {
+          const { error } = await supabase
+            .from('brand_audits')
+            .update({
+              answers: auditAnswers,
+              user_details: userDetails,
+              status: 'draft',
+            })
+            .eq('id', draftAuditId);
+          if (error) throw error;
+        } else {
+          const { data, error } = await supabase
+            .from('brand_audits')
+            .insert({
+              user_id: user.id,
+              title: 'Brand Audit',
+              answers: auditAnswers,
+              user_details: userDetails,
+              status: 'draft',
+            })
+            .select('id')
+            .single();
+          if (error) throw error;
+          if (data) setDraftAuditId((data as any).id);
+        }
+        lastSavedRef.current = snapshot;
+      } catch (e) {
+        console.error('[BrandAudit] Autosave failed:', e);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 600);
+
+    return () => {
+      if (saveTimeout.current) window.clearTimeout(saveTimeout.current);
+    };
+  }, [user, draftAuditId, userDetails, auditAnswers]);
 
   const steps = [
     "Introduction",
@@ -143,6 +223,7 @@ const BrandAudit = () => {
             userDetails={userDetails}
             answers={auditAnswers}
             onPrevious={handlePrevious}
+            draftAuditId={draftAuditId || undefined}
           />
         );
       default:

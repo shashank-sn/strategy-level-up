@@ -16,6 +16,7 @@ interface AuditResultsProps {
   userDetails: UserDetails;
   answers: AuditAnswers;
   onPrevious: () => void;
+  draftAuditId?: string;
 }
 
 const calculateScore = (answers: AuditAnswers): number => {
@@ -62,48 +63,58 @@ const getStrengthsAndWeaknesses = (answers: AuditAnswers) => {
   return { strengths, weaknesses };
 };
 
-const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) => {
+const AuditResults = ({ userDetails, answers, onPrevious, draftAuditId }: AuditResultsProps) => {
   const score = calculateScore(answers);
   const scoreCategory = getScoreCategory(score);
   const { user } = useAuth();
   const savedRef = useRef(false);
   const { toast } = useToast();
 
-  useEffect(() => {
+useEffect(() => {
     if (!user || savedRef.current) return;
     savedRef.current = true;
     (async () => {
       try {
-        console.log("[AuditResults] Saving audit for user", user.id, { score, userDetails, answers });
-        const { error } = await supabase.from('brand_audits').insert({
-          user_id: user.id,
-          status: 'completed',
-          title: 'Brand Health Check',
-          total_score: score,
-          max_possible_score: 100,
-          completion_percentage: 100,
-          completed_at: new Date().toISOString(),
-          answers: answers,
-          user_details: userDetails
-        });
-        if (error) {
-          console.error("[AuditResults] Failed to save audit:", error);
-          toast({
-            title: "Could not save your results",
-            description: "Please refresh and try again.",
+        console.log("[AuditResults] Finalizing audit for user", user.id, { score });
+        if (draftAuditId) {
+          const { error } = await supabase.from('brand_audits').update({
+            status: 'completed',
+            title: 'Brand Health Check',
+            total_score: score,
+            max_possible_score: 100,
+            completion_percentage: 100,
+            completed_at: new Date().toISOString(),
+            answers: answers,
+            user_details: userDetails
+          }).eq('id', draftAuditId);
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.from('brand_audits').insert({
+            user_id: user.id,
+            status: 'completed',
+            title: 'Brand Health Check',
+            total_score: score,
+            max_possible_score: 100,
+            completion_percentage: 100,
+            completed_at: new Date().toISOString(),
+            answers: answers,
+            user_details: userDetails
           });
-          return;
+          if (error) throw error;
         }
         toast({
           title: "Audit results saved",
           description: "Your Brand Health Check has been saved to your account.",
         });
       } catch (e) {
-        console.error("[AuditResults] Exception while saving audit:", e);
-        // Ignore errors; routing will fallback to audit next time
+        console.error("[AuditResults] Failed to save audit:", e);
+        toast({
+          title: "Could not save your results",
+          description: "Please refresh and try again.",
+        });
       }
     })();
-  }, [user, score, userDetails, answers, toast]);
+  }, [user, score, userDetails, answers, toast, draftAuditId]);
 
   const { strengths, weaknesses } = getStrengthsAndWeaknesses(answers);
 
