@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,10 +10,15 @@ import {
   Lock, 
   Edit
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export const ProgressDashboard = () => {
   const { progress } = useProgress();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [modules, setModules] = useState(progress.modules);
+  const [loading, setLoading] = useState(false);
 
   const moduleRoutes: Record<string, string> = {
     'brand-profile': '/brand-audit', // Brand Profile Setup leads to audit page
@@ -35,6 +41,88 @@ export const ProgressDashboard = () => {
     if (score >= 60) return 'text-yellow-600';
     return 'text-red-600';
   };
+  
+  // SEO tags
+  useEffect(() => {
+    document.title = "Brand Strategy Dashboard | Progress";
+    const existingMeta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    const meta = existingMeta ?? (() => {
+      const m = document.createElement('meta');
+      m.name = 'description';
+      document.head.appendChild(m);
+      return m;
+    })();
+    meta.setAttribute('content', 'Track your brand profile setup and brand audit progress.');
+
+    const existingLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    const link = existingLink ?? (() => {
+      const l = document.createElement('link');
+      l.rel = 'canonical';
+      document.head.appendChild(l);
+      return l;
+    })();
+    link.href = window.location.origin + '/progress';
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    (async () => {
+      try {
+        setLoading(true);
+        const { data: audit } = await supabase
+          .from('brand_audits')
+          .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('first_name, last_name, company_name, role')
+          .eq('user_id', user.id)
+          .limit(1)
+          .maybeSingle();
+
+        const details: any = (audit?.user_details && typeof audit.user_details === 'object') ? (audit.user_details as any) : {};
+        const name = details.name || [profile?.first_name, profile?.last_name].filter(Boolean).join(' ');
+        const role = details.role || (profile as any)?.role;
+        const industry = details.industry;
+        const company = details.company || (profile as any)?.company_name;
+        const website = details.website;
+
+        const fields = [name, role, industry, company, website];
+        const filled = fields.filter((f) => (typeof f === 'string' ? f.trim().length > 0 : !!f)).length;
+        const profileScore = Math.round((filled / fields.length) * 100);
+
+        if (!active) return;
+
+        setModules((prev) =>
+          prev.map((m) => {
+            if (m.id === 'brand-audit') {
+              const score = audit?.total_score ?? 0;
+              const completed = audit ? (audit.status === 'completed' || (audit.completion_percentage ?? 0) >= 100) : false;
+              return { ...m, score, completed, locked: false };
+            }
+            if (m.id === 'brand-profile') {
+              const completed = profileScore >= 60;
+              return { ...m, score: profileScore, completed, locked: false };
+            }
+            return m;
+          })
+        );
+      } catch (err) {
+        console.error('[ProgressDashboard] Error loading Supabase progress', err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,7 +146,7 @@ export const ProgressDashboard = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Completed Modules</p>
                   <p className="text-2xl font-bold">
-                    {progress.modules.filter(m => m.completed).length}/{progress.modules.length}
+                    {modules.filter(m => m.completed).length}/{modules.length}
                   </p>
                 </div>
               </div>
@@ -75,7 +163,7 @@ export const ProgressDashboard = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Total Score</p>
                   <p className="text-2xl font-bold">
-                    {progress.modules.reduce((sum, module) => sum + module.score, 0)}
+                    {modules.reduce((sum, module) => sum + module.score, 0)}
                   </p>
                 </div>
               </div>
@@ -88,7 +176,7 @@ export const ProgressDashboard = () => {
         <Card>
           <CardContent className="p-6">
             <div className="space-y-4">
-              {progress.modules.map((module, index) => (
+              {modules.map((module, index) => (
                 <div key={module.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-sm font-medium">
