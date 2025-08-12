@@ -41,6 +41,15 @@ export const ProgressDashboard = () => {
     if (score >= 60) return 'text-yellow-600';
     return 'text-red-600';
   };
+
+  // Helper to determine if a response is considered answered
+  const isAnswered = (value: any) => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string') return value.trim().length > 0;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'object') return Object.keys(value).length > 0;
+    return true; // numbers, booleans are considered answered
+  };
   
   // SEO tags
   useEffect(() => {
@@ -70,20 +79,32 @@ export const ProgressDashboard = () => {
     (async () => {
       try {
         setLoading(true);
-        const { data: audit } = await supabase
-          .from('brand_audits')
-          .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
 
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('first_name, last_name, company_name, role')
-          .eq('user_id', user.id)
-          .limit(1)
-          .maybeSingle();
+        const foundationQuestionIds = ['profit-only', 'purpose-statement', 'vision-statement', 'mission-statement'];
+
+        const [auditRes, profileRes, respRes] = await Promise.all([
+          supabase
+            .from('brand_audits')
+            .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          supabase
+            .from('profiles')
+            .select('first_name, last_name, company_name, role')
+            .eq('user_id', user.id)
+            .limit(1)
+            .maybeSingle(),
+          supabase
+            .from('module_responses')
+            .select('question_id, response_data')
+            .eq('user_id', user.id)
+            .eq('module_id', 'brand-foundation')
+        ]);
+
+        const audit = auditRes.data as any;
+        const profile = profileRes.data as any;
 
         const details: any = (audit?.user_details && typeof audit.user_details === 'object') ? (audit.user_details as any) : {};
         const name = details.name || [profile?.first_name, profile?.last_name].filter(Boolean).join(' ');
@@ -95,6 +116,11 @@ export const ProgressDashboard = () => {
         const fields = [name, role, industry, company, website];
         const filled = fields.filter((f) => (typeof f === 'string' ? f.trim().length > 0 : !!f)).length;
         const profileScore = Math.round((filled / fields.length) * 100);
+
+        // Compute Brand Foundation score based on answered required questions
+        const responses = (respRes.data || []) as Array<{ question_id: string; response_data: any }>;
+        const answeredCount = responses.filter(r => foundationQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
+        const foundationScore = Math.round((answeredCount / foundationQuestionIds.length) * 100);
 
         if (!active) return;
 
@@ -108,6 +134,10 @@ export const ProgressDashboard = () => {
             if (m.id === 'brand-profile') {
               const completed = profileScore >= 60;
               return { ...m, score: profileScore, completed, locked: false };
+            }
+            if (m.id === 'foundation') {
+              const completed = foundationScore >= 100;
+              return { ...m, score: foundationScore, completed, locked: false };
             }
             return m;
           })
