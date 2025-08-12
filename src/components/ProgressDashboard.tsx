@@ -81,8 +81,17 @@ export const ProgressDashboard = () => {
         setLoading(true);
 
         const foundationQuestionIds = ['profit-only', 'purpose-statement', 'vision-statement', 'mission-statement'];
+        const businessGoalsQuestionIds = [
+          'ultimate_goal',
+          'midterm_goal',
+          'shortterm_goal',
+          'brand_awareness_confidence',
+          'customer_engagement_confidence',
+          'customer_loyalty_confidence',
+          'measurement_strategy'
+        ];
 
-        const [auditRes, profileRes, respRes] = await Promise.all([
+        const [auditRes, profileRes, respRes, respGoalsRes] = await Promise.all([
           supabase
             .from('brand_audits')
             .select('total_score, completion_percentage, status, user_details, created_at, completed_at')
@@ -100,7 +109,12 @@ export const ProgressDashboard = () => {
             .from('module_responses')
             .select('question_id, response_data')
             .eq('user_id', user.id)
-            .eq('module_id', 'brand-foundation')
+            .eq('module_id', 'brand-foundation'),
+          supabase
+            .from('module_responses')
+            .select('question_id, response_data')
+            .eq('user_id', user.id)
+            .eq('module_id', 'business-goals')
         ]);
 
         const audit = auditRes.data as any;
@@ -118,9 +132,14 @@ export const ProgressDashboard = () => {
         const profileScore = Math.round((filled / fields.length) * 100);
 
         // Compute Brand Foundation score based on answered required questions
-        const responses = (respRes.data || []) as Array<{ question_id: string; response_data: any }>;
-        const answeredCount = responses.filter(r => foundationQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
-        const foundationScore = Math.round((answeredCount / foundationQuestionIds.length) * 100);
+        const responsesFoundation = (respRes.data || []) as Array<{ question_id: string; response_data: any }>;
+        const answeredFoundation = responsesFoundation.filter(r => foundationQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
+        const foundationScore = Math.round((answeredFoundation / foundationQuestionIds.length) * 100);
+
+        // Compute Business Goals score based on answered required questions
+        const responsesGoals = (respGoalsRes.data || []) as Array<{ question_id: string; response_data: any }>;
+        const answeredGoals = responsesGoals.filter(r => businessGoalsQuestionIds.includes(r.question_id) && isAnswered(r.response_data)).length;
+        const businessGoalsScore = Math.round((answeredGoals / businessGoalsQuestionIds.length) * 100);
 
         if (!active) return;
 
@@ -138,6 +157,10 @@ export const ProgressDashboard = () => {
             if (m.id === 'foundation') {
               const completed = foundationScore >= 100;
               return { ...m, score: foundationScore, completed, locked: false };
+            }
+            if (m.id === 'business-goals') {
+              const completed = businessGoalsScore >= 100;
+              return { ...m, score: businessGoalsScore, completed, locked: false };
             }
             return m;
           })
