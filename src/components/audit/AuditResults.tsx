@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { UserDetails, AuditAnswers } from "@/pages/BrandAudit";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AuditResultsProps {
   userDetails: UserDetails;
@@ -65,26 +67,43 @@ const AuditResults = ({ userDetails, answers, onPrevious }: AuditResultsProps) =
   const scoreCategory = getScoreCategory(score);
   const { user } = useAuth();
   const savedRef = useRef(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!user || savedRef.current) return;
     savedRef.current = true;
     (async () => {
       try {
-        await supabase.from('brand_audits').insert({
+        console.log("[AuditResults] Saving audit for user", user.id, { score, userDetails, answers });
+        const { error } = await supabase.from('brand_audits').insert({
           user_id: user.id,
           status: 'completed',
           title: 'Brand Health Check',
           total_score: score,
           max_possible_score: 100,
           completion_percentage: 100,
-          completed_at: new Date().toISOString()
+          completed_at: new Date().toISOString(),
+          answers: answers,
+          user_details: userDetails
+        });
+        if (error) {
+          console.error("[AuditResults] Failed to save audit:", error);
+          toast({
+            title: "Could not save your results",
+            description: "Please refresh and try again.",
+          });
+          return;
+        }
+        toast({
+          title: "Audit results saved",
+          description: "Your Brand Health Check has been saved to your account.",
         });
       } catch (e) {
+        console.error("[AuditResults] Exception while saving audit:", e);
         // Ignore errors; routing will fallback to audit next time
       }
     })();
-  }, [user, score]);
+  }, [user, score, userDetails, answers, toast]);
 
   const { strengths, weaknesses } = getStrengthsAndWeaknesses(answers);
 

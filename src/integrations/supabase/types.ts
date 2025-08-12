@@ -58,6 +58,7 @@ export type Database = {
       }
       brand_audits: {
         Row: {
+          answers: Json
           completed_at: string | null
           completion_percentage: number | null
           created_at: string
@@ -68,9 +69,11 @@ export type Database = {
           title: string
           total_score: number | null
           updated_at: string
+          user_details: Json
           user_id: string
         }
         Insert: {
+          answers?: Json
           completed_at?: string | null
           completion_percentage?: number | null
           created_at?: string
@@ -81,9 +84,11 @@ export type Database = {
           title: string
           total_score?: number | null
           updated_at?: string
+          user_details?: Json
           user_id: string
         }
         Update: {
+          answers?: Json
           completed_at?: string | null
           completion_percentage?: number | null
           created_at?: string
@@ -94,6 +99,7 @@ export type Database = {
           title?: string
           total_score?: number | null
           updated_at?: string
+          user_details?: Json
           user_id?: string
         }
         Relationships: []
