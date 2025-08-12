@@ -10,6 +10,15 @@ export default function Auth() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const nextPath = params.get('next') || undefined;
+
+  // If a next path is provided, remember it for post-auth redirect
+  if (nextPath) {
+    localStorage.setItem('postAuthNext', nextPath);
+  }
+
   // Redirect if already logged in
   if (user) {
     return <Navigate to="/post-auth" replace />;
