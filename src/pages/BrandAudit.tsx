@@ -40,8 +40,22 @@ const BrandAudit = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // Jump straight to assessment after auth when resume=1
+  // Handle deep-linking into specific steps or resume flow
   useEffect(() => {
+    const step = searchParams.get('step');
+    const stepMap: Record<string, number> = {
+      intro: 0,
+      details: 1,
+      signup: 2,
+      questions: 3,
+      results: 4,
+    };
+
+    if (step && step in stepMap) {
+      setCurrentStep(stepMap[step]);
+      return;
+    }
+
     if (searchParams.get('resume') === '1') {
       setCurrentStep(3);
     }
@@ -65,7 +79,8 @@ const BrandAudit = () => {
         .eq('status', 'completed')
         .limit(1);
 
-      if (data && data.length > 0) {
+      const hasStep = !!searchParams.get('step');
+      if (data && data.length > 0 && !hasStep) {
         navigate('/progress', { replace: true });
       }
     })();

@@ -224,18 +224,25 @@ export const ProgressDashboard = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => navigate(moduleRoutes[module.id])}
+                            onClick={() => {
+                              if (module.id === 'brand-profile') return navigate('/brand-audit?step=details');
+                              if (module.id === 'brand-audit') return navigate('/brand-audit?step=questions');
+                              navigate(moduleRoutes[module.id]);
+                            }}
                             className="flex items-center gap-1"
                           >
                             <Edit className="w-3 h-3" />
                             Edit
                           </Button>
                         )}
-                        
                         {!module.completed && (
                           <Button
                             size="sm"
-                            onClick={() => navigate(moduleRoutes[module.id])}
+                            onClick={() => {
+                              if (module.id === 'brand-profile') return navigate('/brand-audit?step=details');
+                              if (module.id === 'brand-audit') return navigate('/brand-audit?resume=1');
+                              navigate(moduleRoutes[module.id]);
+                            }}
                           >
                             {module.score > 0 ? 'Continue' : 'Start'}
                           </Button>
