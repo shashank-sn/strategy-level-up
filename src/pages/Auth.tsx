@@ -12,7 +12,8 @@ export default function Auth() {
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const nextPath = params.get('next') || undefined;
+  const rawNext = params.get('next');
+  const nextPath = rawNext ? decodeURIComponent(rawNext) : undefined;
 
   // If a next path is provided, remember it for post-auth redirect
   if (nextPath) {

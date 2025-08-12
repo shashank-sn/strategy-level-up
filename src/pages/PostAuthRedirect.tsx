@@ -18,7 +18,8 @@ export default function PostAuthRedirect() {
     }
 
     const params = new URLSearchParams(location.search);
-    const nextFromQuery = params.get("next");
+    const rawNext = params.get("next");
+    const nextFromQuery = rawNext ? decodeURIComponent(rawNext) : null;
     const storedNext = localStorage.getItem("postAuthNext");
     const fallback = "/brand-audit?resume=1";
     const intendedNext = nextFromQuery || storedNext || fallback;
